@@ -449,13 +449,17 @@
           <span class="eyebrow">من العميل إلى ريسبارك</span>
           <h2>فضلاً، شاركنا ملاحظاتك وتصورك المبدئي</h2>
           <p class="sub">أخبرنا بأي تعديل أو إضافة ترغب بها في التصور المبدئي حتى نبني المنتج بالشكل الذي تريده.</p>
-          <form>
+          <form id="feedback-form" action="https://formsubmit.co/mutazima24@gmail.com" method="POST">
+            <input type="hidden" name="_subject" value="ملاحظة جديدة على تصور سوق طبي — ريسبارك">
+            <input type="hidden" name="_captcha" value="false">
+            <input type="hidden" name="_template" value="table">
+            <input type="hidden" name="_autoresponse" value="شكراً لملاحظتك! ستُراجع من قبل فريق ريسبارك.">
             <div class="field-row">
-              <div class="field"><label for="fb-name">الاسم (اختياري)</label><input type="text" id="fb-name" placeholder="اكتب اسمك"></div>
-              <div class="field"><label for="fb-contact">الهاتف أو البريد (اختياري)</label><input type="text" id="fb-contact" placeholder="اكتب وسيلة التواصل"></div>
+              <div class="field"><label for="fb-name">الاسم (اختياري)</label><input type="text" id="fb-name" name="الاسم" placeholder="اكتب اسمك"></div>
+              <div class="field"><label for="fb-contact">الهاتف أو البريد (اختياري)</label><input type="text" id="fb-contact" name="التواصل" placeholder="اكتب وسيلة التواصل"></div>
             </div>
             <div class="field"><label for="fb-type">ما طبيعة ملاحظتك؟</label>
-              <select id="fb-type">
+              <select id="fb-type" name="نوع الملاحظة">
                 <option>تعديل في التصميم الحالي</option>
                 <option>إضافة جديدة</option>
                 <option>حذف عنصر</option>
@@ -463,16 +467,17 @@
                 <option>ملاحظة عامة</option>
               </select>
             </div>
-            <div class="field"><label for="fb-section">في أي قسم أو مسار الملاحظة؟</label><input type="text" id="fb-section" placeholder="مثال: سوق طبي، التبرعات، الوظائف، MVP…"></div>
-            <div class="field"><label for="fb-detail">تفصيل الملاحظة</label><textarea id="fb-detail" placeholder="اكتب ما تود تعديله أو إضافته هنا…"></textarea></div>
+            <div class="field"><label for="fb-section">في أي قسم أو مسار الملاحظة؟</label><input type="text" id="fb-section" name="القسم" placeholder="مثال: سوق طبي، التبرعات، الوظائف، MVP…"></div>
+            <div class="field"><label for="fb-detail">تفصيل الملاحظة *</label><textarea id="fb-detail" name="تفصيل الملاحظة" placeholder="اكتب ما تود تعديله أو إضافته هنا…" required></textarea></div>
             <div class="field"><label for="fb-priority">الأولوية من وجهة نظرك</label>
-              <select id="fb-priority">
+              <select id="fb-priority" name="الأولوية">
                 <option>أولوية قصوى للإطلاق الأول</option>
                 <option>مهم لكن يمكن تأجيله</option>
                 <option>تحسين مستقبلي</option>
               </select>
             </div>
-            <button type="button" class="btn btn-primary">إرسال الملاحظة لريسبارك</button>
+            <button type="submit" class="btn btn-primary" id="fb-submit">إرسال الملاحظة لريسبارك</button>
+            <div id="fb-status" style="margin-top:14px;font-size:13px;display:none;"></div>
           </form>
         </div>
       </div>
@@ -481,6 +486,39 @@
   <footer class="footer"><div class="container footer-inner"><div><strong>سوق طبي</strong> — تصور مبدئي صادر من ريسبارك للحلول الرقمية</div><div>للنقاش والتطوير · إصدار تصوري أولي</div></div></footer>
 </div>
 <script>
+  // ===== Feedback form handler =====
+  (function () {
+    var form = document.getElementById('feedback-form');
+    if (!form) return;
+    var submitBtn = document.getElementById('fb-submit');
+    var statusDiv = document.getElementById('fb-status');
+
+    function showStatus(msg, ok) {
+      statusDiv.style.display = 'block';
+      statusDiv.style.color = ok ? '#0e7c6b' : '#c0392b';
+      statusDiv.textContent = msg;
+    }
+
+    form.addEventListener('submit', function (e) {
+      var detail = document.getElementById('fb-detail').value.trim();
+      if (!detail) {
+        e.preventDefault();
+        showStatus('من فضلك اكتب تفصيل الملاحظة قبل الإرسال.', false);
+        return;
+      }
+      submitBtn.textContent = 'جارٍ الإرسال…';
+      submitBtn.disabled = true;
+      submitBtn.style.opacity = '.7';
+      statusDiv.style.display = 'none';
+      // formsubmit.co will redirect; this is a soft fallback in case JS runs
+      setTimeout(function () {
+        submitBtn.textContent = '✓ تم الإرسال — شكراً';
+        submitBtn.style.background = '#0e7c6b';
+      }, 1200);
+    });
+  })();
+
+  // ===== Segmented preview toggle =====
   const modes = {
     market: { search: 'ابحث عن جهاز أو مستلزم', note: 'كل إعلان يعرض الحالة والكمية والموقع قبل التفاصيل الثانوية.' },
     donation: { search: 'ابحث عن تبرع أو جهة محتاجة', note: 'التبرع مسار مستقل: عرض واضح، مراجعة، مطابقة، ثم تأكيد استلام.' },
