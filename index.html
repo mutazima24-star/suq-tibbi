@@ -230,6 +230,16 @@
     .field textarea { min-height:110px; resize:vertical; }
     .field-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
     .feedback .btn { width:100%; }
+    .ty-overlay{position:fixed;inset:0;background:rgba(16,43,67,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:9000;opacity:0;pointer-events:none;transition:opacity .35s;}
+    .ty-overlay.show{opacity:1;pointer-events:auto;}
+    .ty-card{background:#fff;border-radius:22px;padding:48px 40px;max-width:440px;width:calc(100% - 40px);text-align:center;box-shadow:0 30px 80px rgba(16,43,67,.25);transform:scale(.9);transition:transform .35s;}
+    .ty-overlay.show .ty-card{transform:scale(1);}
+    .ty-mark{width:54px;height:54px;border-radius:16px 16px 16px 5px;background:var(--teal);margin:0 auto 18px;display:grid;place-items:center;position:relative;}
+    .ty-mark:before{content:"";width:22px;height:3px;background:#fff;border-radius:2px;transform:rotate(-38deg);position:absolute;top:26px;right:16px;}
+    .ty-mark:after{content:"";width:3px;height:22px;background:#fff;border-radius:2px;transform:rotate(-38deg);position:absolute;top:16px;right:26px;}
+    .ty-card h3{color:var(--navy);font-size:24px;margin:0 0 8px;}
+    .ty-card p{color:var(--muted);font-size:14px;line-height:1.7;margin:0 0 18px;}
+    .ty-countdown{width:48px;height:48px;border-radius:50%;background:var(--navy);color:#fff;font-size:22px;font-weight:800;display:grid;place-items:center;margin:0 auto;}
     @media (max-width: 900px) {
       .nav { display:none; }
       .hero-grid, .respark-grid, .product-layout, .mvp-wrap { grid-template-columns:1fr; gap:36px; }
@@ -449,11 +459,12 @@
           <span class="eyebrow">من العميل إلى ريسبارك</span>
           <h2>فضلاً، شاركنا ملاحظاتك وتصورك المبدئي</h2>
           <p class="sub">أخبرنا بأي تعديل أو إضافة ترغب بها في التصور المبدئي حتى نبني المنتج بالشكل الذي تريده.</p>
-          <form id="feedback-form" action="https://formsubmit.co/mutazima24@gmail.com" method="POST">
+          <form id="feedback-form" action="https://formsubmit.co/mutaz@respark-os.com" method="POST">
             <input type="hidden" name="_subject" value="ملاحظة جديدة على تصور سوق طبي — ريسبارك">
             <input type="hidden" name="_captcha" value="false">
             <input type="hidden" name="_template" value="table">
             <input type="hidden" name="_autoresponse" value="شكراً لملاحظتك! ستُراجع من قبل فريق ريسبارك.">
+            <input type="hidden" name="_next" value="https://suq-tibbi.vercel.app?sent=1">
             <div class="field-row">
               <div class="field"><label for="fb-name">الاسم (اختياري)</label><input type="text" id="fb-name" name="الاسم" placeholder="اكتب اسمك"></div>
               <div class="field"><label for="fb-contact">الهاتف أو البريد (اختياري)</label><input type="text" id="fb-contact" name="التواصل" placeholder="اكتب وسيلة التواصل"></div>
@@ -484,6 +495,14 @@
     </section>
   </main>
   <footer class="footer"><div class="container footer-inner"><div><strong>سوق طبي</strong> — تصور مبدئي صادر من ريسبارك للحلول الرقمية</div><div>للنقاش والتطوير · إصدار تصوري أولي</div></div></footer>
+  <div id="ty-overlay">
+    <div class="ty-card">
+      <div class="ty-mark"></div>
+      <h3>شكراً لملاحظتك</h3>
+      <p>استلمنا ملاحظتك، وستُراجع من قبل فريق ريسبارك. ستعود للصفحة الرئيسية تلقائياً.</p>
+      <div class="ty-countdown">٣</div>
+    </div>
+  </div>
 </div>
 <script>
   // ===== Feedback form handler =====
@@ -510,12 +529,27 @@
       submitBtn.disabled = true;
       submitBtn.style.opacity = '.7';
       statusDiv.style.display = 'none';
-      // formsubmit.co will redirect; this is a soft fallback in case JS runs
-      setTimeout(function () {
-        submitBtn.textContent = '✓ تم الإرسال — شكراً';
-        submitBtn.style.background = '#0e7c6b';
-      }, 1200);
     });
+  })();
+
+  // ===== Thank-you overlay (Respark themed) =====
+  (function () {
+    if (window.location.search.indexOf('sent=1') === -1) return;
+    var t = document.getElementById('ty-overlay');
+    if (!t) return;
+    t.classList.add('show');
+    var counter = document.querySelector('.ty-countdown');
+    var seconds = 3;
+    if (counter) counter.textContent = seconds;
+    var timer = setInterval(function () {
+      seconds--;
+      if (counter && seconds > 0) counter.textContent = seconds;
+      if (seconds <= 0) {
+        clearInterval(timer);
+        var cleanUrl = window.location.origin + window.location.pathname;
+        window.location.href = cleanUrl;
+      }
+    }, 1000);
   })();
 
   // ===== Segmented preview toggle =====
