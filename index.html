@@ -281,8 +281,10 @@
       .hero { padding-top: 60px; min-height: auto; }
     }
   </style>
+  <link rel="stylesheet" href="/assets/refinements.css">
 </head>
 <body>
+  <a class="skip-link" href="#main">تجاوز إلى المحتوى</a>
 
   <header class="topbar">
     <div class="topbar-inner container" style="display:flex;align-items:center;width:100%;">
@@ -290,7 +292,8 @@
         <div class="brand-mark"></div>
         <span>سوق طبي<small>RESPARK DIGITAL SOLUTIONS</small></span>
       </div>
-      <nav class="nav">
+      <button type="button" class="menu-toggle" aria-expanded="false" aria-controls="site-nav">القائمة <span aria-hidden="true">☰</span></button>
+      <nav class="nav" id="site-nav" aria-label="أقسام التصور">
         <a href="#problem">المشكلة</a>
         <a href="#principles">المبادئ</a>
         <a href="#experience">التجربة</a>
@@ -303,19 +306,19 @@
     </div>
   </header>
 
-  <main>
+  <main id="main">
     <section class="hero">
       <div class="container hero-grid">
         <div class="hero-copy">
-          <span class="eyebrow">تصور منتج رقمي متخصص</span>
+          <span class="eyebrow">تصور أولي · للنقاش والتطوير</span>
           <h1>سوق طبي.<br><span style="color:#9fe0d7">سوق يعرف قيمة</span><br>كل فرصة.</h1>
-          <p>وجهة لتجميع المستلزمات الطبية والأجهزة — بيع بسعر مناسب، تبرع بفائض يحتاجه غيرك، وفرص عمل متخصصة. كل ذلك في سوق واحد موثوق يجمع العرض بالطلب المناسب.</p>
+          <p>وجهة لتجميع المستلزمات الطبية والأجهزة — بيع بسعر مناسب، تبرع بفائض يحتاجه غيرك، وفرص عمل متخصصة. تصور لسوق متخصص يجمع العرض بالطلب المناسب، ويجعل بيانات كل فرصة أوضح.</p>
           <div class="hero-actions">
             <a href="#experience" class="btn btn-primary">استكشف التصور المبدئي</a>
             <a href="#mvp" class="btn btn-ghost">ما الذي نطلقه أولاً؟</a>
           </div>
           <div class="hero-meta">
-            <div><strong>سوق متخصص</span></div>
+            <div><strong>سوق متخصص</strong> — للمستلزمات الطبية والأجهزة</div>
             <div><strong>ثقة منظمة</strong> — بيانات واضحة قبل التواصل</div>
             <div><strong>أثر قابل للقياس</strong> — من فائض إلى فرصة مفيدة</div>
           </div>
@@ -329,40 +332,22 @@
               <div style="width:8px;height:8px;border-radius:50%;background:#4eaaa0;"></div>
             </div>
           </div>
-          <div class="card-segments">
-            <button class="active" data-mode="market" role="tab" aria-selected="true">السوق الطبي</button>
-            <button data-mode="donation" role="tab" aria-selected="false">التبرعات</button>
-            <button data-mode="jobs" role="tab" aria-selected="false">الوظائف</button>
+          <p class="demo-label">معاينة تفاعلية · بيانات توضيحية</p>
+          <div class="card-segments segmented" role="tablist" aria-label="مسارات السوق">
+            <button type="button" id="tab-market" class="active" data-mode="market" role="tab" aria-controls="preview-panel" aria-selected="true">السوق الطبي</button>
+            <button type="button" id="tab-donation" data-mode="donation" role="tab" aria-controls="preview-panel" aria-selected="false" tabindex="-1">التبرعات</button>
+            <button type="button" id="tab-jobs" data-mode="jobs" role="tab" aria-controls="preview-panel" aria-selected="false" tabindex="-1">الوظائف</button>
           </div>
-          <div class="mock-search">
-            <div class="search-input"><span id="mode-search">ابحث عن جهاز أو مستلزم</span><b style="color: var(--teal)">⌕</b></div>
-            <button class="filter">الرياض⌄</button>
-          </div>
-          <div class="preview-grid">
-            <div class="listing-card">
-              <div class="listing-image"></div>
-              <div class="listing-body">
-                <div class="mock-title">سبحة عين النمر</div>
-                <div class="mock-meta"><span>جديدة</span><span>1 حبة</span><span>الرياض</span></div>
-                <div class="listing-foot">
-                  <span class="mock-price">٨٥٠ ر.س</span>
-                  <span>تواصل</span>
-                </div>
-              </div>
+          <div id="preview-panel" role="tabpanel" aria-labelledby="tab-market">
+            <div class="mock-search">
+              <label class="search-input"><span class="sr-only">البحث في المعاينة</span><input id="preview-search" type="search" placeholder="ابحث عن جهاز أو مستلزم" maxlength="100"></label>
+              <label><span class="sr-only">مدينة المعاينة</span><select id="preview-city" class="filter"><option value="">كل المدن</option><option>الرياض</option><option>جدة</option><option>الدمام</option></select></label>
             </div>
-            <div class="listing-card">
-              <div class="listing-image" style="background: linear-gradient(135deg, #fff6dd 0%, #f6c243 100%);"></div>
-              <div class="listing-body">
-                <div class="mock-title">تبرع — مستلزمات طبية</div>
-                <div class="mock-meta"><span>متبرع</span><span>صالحة</span><span>جدة</span></div>
-                <div class="listing-foot">
-                  <span class="mock-price">مجاني</span>
-                  <span>التفاصيل</span>
-                </div>
-              </div>
-            </div>
+            <div id="preview-results" class="preview-grid"></div>
+            <p id="preview-empty" hidden>لا توجد نتائج بهذه المعايير. جرّب كلمة أخرى أو كل المدن.</p>
+            <p id="mode-note" class="demo-note" aria-live="polite"></p>
           </div>
-          <p id="mode-note" style="font-size: 11px; color: var(--muted); margin-top: 16px; margin-bottom: 0;">كل إعلان يعرض الحالة والكمية والموقع قبل التفاصيل الثانوية.</p>
+          <noscript><p>فعّل JavaScript لتجربة البحث والتنقل بين أمثلة السوق والتبرعات والوظائف.</p></noscript>
         </div>
       </div>
     </section>
@@ -396,39 +381,16 @@
         <div class="section-head"><div class="kicker"><span class="num-part">03</span> — تجربة المنتج</div><h2>ثلاثة أبواب، سوق واحد.</h2><p class="lead">يصل المستخدم إلى هدفه من خلال مسار مفهوم: يشتري، يتبرع، أو يبحث عن فرصة مهنية.</p></div>
         <div class="product-layout">
           <div class="product-notes">
-            <div class="note-row"><div class="note-icon">⌕</div><div><h3>بحث يفهم لغة القطاع</h3><p>اسم المنتج، الماركة، الموديل، المدينة، التخصص، وفائض المخزون.</p></div></div>
-            <div class="note-row"><div class="note-icon">⚙️</div><div><h3>إدراج في قالب واحد</h3><p>بضع خطوات لإدراج واضح يغطي الحالة والكمية والتواصل.</p></div></div>
-            <div class="note-row"><div class="note-icon">💬</div><div><h3>مراسلة داخل المنصة</h3><p>تواصل مباشر بين الطرفين مع إمكانية حفظ الإعلانات المفضلة.</p></div></div>
+            <div class="note-row"><div class="note-icon" aria-hidden="true">01</div><div><h3>بحث يفهم لغة القطاع</h3><p>اسم المنتج، الماركة، الموديل، المدينة، التخصص، وفائض المخزون.</p></div></div>
+            <div class="note-row"><div class="note-icon" aria-hidden="true">02</div><div><h3>إدراج في قالب واحد</h3><p>بضع خطوات لإدراج واضح يغطي الحالة والكمية والتواصل.</p></div></div>
+            <div class="note-row"><div class="note-icon" aria-hidden="true">03</div><div><h3>مراسلة داخل المنصة</h3><p>تواصل مباشر بين الطرفين مع إمكانية حفظ الإعلانات المفضلة.</p></div></div>
           </div>
-          <div class="product-frame">
-            <div class="search-line">
-              <div class="search-input"><span>ابحث عن جهاز أو مستلزم…</span><b style="color: var(--teal)">⌕</b></div>
-              <button class="filter">الكل⌄</button>
-            </div>
-            <div class="preview-grid">
-              <div class="listing-card">
-                <div class="listing-image"></div>
-                <div class="listing-body">
-                  <div class="mock-title">حجر عين النمر</div>
-                  <div class="mock-meta"><span>جديدة</span><span>٣ حبات</span></div>
-                  <div class="listing-foot">
-                    <span class="mock-price">٨٥٠ ر.س</span>
-                    <span>تواصل</span>
-                  </div>
-                </div>
-              </div>
-              <div class="listing-card">
-                <div class="listing-image"></div>
-                <div class="listing-body">
-                  <div class="mock-title">مستلزمات طبية</div>
-                  <div class="mock-meta"><span>متبرع</span><span>١٠ حبات</span></div>
-                  <div class="listing-foot">
-                    <span class="mock-price">مجاني</span>
-                    <span>التفاصيل</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div class="product-frame listing-example">
+            <span class="demo-label">مثال توضيحي لصفحة إعلان</span>
+            <div class="example-top"><img src="/assets/wheelchair.svg" width="260" height="190" alt="رسم توضيحي لكرسي متحرك" loading="lazy"><div><span class="category-tag">أجهزة مساعدة</span><h3>كرسي متحرك يدوي</h3><p class="example-price">٦٥٠ ر.س <small>سعر توضيحي</small></p></div></div>
+            <dl class="listing-specs"><div><dt>الحالة</dt><dd>مستعمل — بحالة جيدة</dd></div><div><dt>الكمية</dt><dd>قطعة واحدة</dd></div><div><dt>الموقع</dt><dd>الرياض</dd></div><div><dt>التسليم</dt><dd>بالاتفاق بين الطرفين</dd></div></dl>
+            <p>وصف واضح للحالة، وصور للمنتج، وبيانات الجهة المعلنة قبل بدء التواصل.</p>
+            <a href="#feedback" class="btn btn-primary">اقترح تحسيناً على تجربة الإعلان</a>
           </div>
         </div>
       </div>
@@ -439,22 +401,23 @@
         <div class="section-head"><div class="kicker"><span class="num-part">04</span> — رحلات المستخدم</div><h2>كل رحلة تنتهي بخطوة واضحة.</h2></div>
         <div class="journeys">
           <div class="journey">
-            <div class="icon">🛒</div>
+            <div class="icon" aria-hidden="true">01</div>
             <h3>المشتري</h3>
             <p>يبحث عن جهاز أو مستلزم بحالة وسعر مناسبين.</p>
-            <div class="flow"><span>بحث</span><span class="arrow">→</span><span>فلترة</span><span class="arrow">→</span><span>مراسلة</span><span class="arrow">→</span><span>اتفاق</span></div>
+            <div class="flow"><span>بحث</span><span class="arrow" aria-hidden="true">←</span><span>فلترة</span><span class="arrow" aria-hidden="true">←</span><span>مراسلة</span><span class="arrow" aria-hidden="true">←</span><span>اتفاق</span></div>
           </div>
+          <div class="journey"><div class="icon" aria-hidden="true">02</div><h3>البائع والمنشأة</h3><p>يعرض الفائض ببيانات واضحة ويتابع الطلبات حتى تحديث حالة الإعلان.</p><div class="flow"><span>حساب</span><span class="arrow" aria-hidden="true">←</span><span>إدراج</span><span class="arrow" aria-hidden="true">←</span><span>تواصل</span><span class="arrow" aria-hidden="true">←</span><span>تحديث</span></div></div>
           <div class="journey">
-            <div class="icon">🎁</div>
+            <div class="icon" aria-hidden="true">03</div>
             <h3>المتبرع</h3>
             <p>يريد أن يستفيد فائضه الطبي من يحتاجه.</p>
-            <div class="flow"><span>إدراج</span><span class="arrow">→</span><span>مراجعة</span><span class="arrow">→</span><span>مطابقة</span><span class="arrow">→</span><span>استلام</span></div>
+            <div class="flow"><span>إدراج</span><span class="arrow" aria-hidden="true">←</span><span>مراجعة</span><span class="arrow" aria-hidden="true">←</span><span>مطابقة</span><span class="arrow" aria-hidden="true">←</span><span>استلام</span></div>
           </div>
           <div class="journey">
-            <div class="icon">👤</div>
+            <div class="icon" aria-hidden="true">04</div>
             <h3>الباحث عن عمل</h3>
             <p>يبحث عن فرصة مهنية تتناسب مع تخصصه.</p>
-            <div class="flow"><span>تصفح</span><span class="arrow">→</span><span>تقديم</span><span class="arrow">→</span><span>مقابلة</span><span class="arrow">→</span><span>فرصة</span></div>
+            <div class="flow"><span>تصفح</span><span class="arrow" aria-hidden="true">←</span><span>تقديم</span><span class="arrow" aria-hidden="true">←</span><span>مقابلة</span><span class="arrow" aria-hidden="true">←</span><span>فرصة</span></div>
           </div>
         </div>
       </div>
@@ -491,22 +454,22 @@
 
     <section class="section" id="roadmap">
       <div class="container">
-        <div class="section-head"><div class="kicker"><span class="num-part">07</span> — خارطة الطريق</div><h2>نمو على مراحل، وكل مرحلة لها سؤال تجيب عنه.</h2></div>
+        <div class="section-head"><div class="kicker"><span class="num-part">07</span> — خارطة الطريق</div><h2>نمو على مراحل، وكل مرحلة لها سؤال تجيب عنه.</h2><p class="lead">مدد تقديرية للنقاش، تُعتمد بعد تثبيت النطاق والموارد. الانتقال مرتبط بنتائج التجربة.</p></div>
         <div class="roadmap">
           <div class="phase">
             <h3>المرحلة الأولى</h3>
-            <div class="when">MVP — ٣ أشهر</div>
-            <p>سوق مبسط + مراسلة + توثيق + تبرعات + وظائف</p>
+            <div class="when">الإصدار الأول · تقدير ٣ أشهر</div>
+            <p>سوق مبسط + مراسلة + توثيق + تبرعات + وظائف</p><p class="phase-gate"><b>شرط الانتقال:</b> إثبات وجود عرض وطلب، واختبار إتمام التواصل مع مستخدمين تجريبيين.</p>
           </div>
           <div class="phase">
             <h3>المرحلة الثانية</h3>
-            <div class="when">GROWTH — ٣–٦ أشهر</div>
-            <p>إشعارات + بحث متقدم + نظام تقييم + لوحة تحكم</p>
+            <div class="when">النمو · تقدير ٣–٦ أشهر</div>
+            <p>إشعارات + بحث متقدم + نظام تقييم + لوحة المنشأة والتحليلات</p><p class="phase-gate"><b>شرط الانتقال:</b> تكرار الاستخدام وتحسن جودة الإعلانات وسرعة الاستجابة.</p>
           </div>
           <div class="phase">
             <h3>المرحلة الثالثة</h3>
-            <div class="when">COMMERCE — ٦–١٢ شهر</div>
-            <p>دفع + ضمان + شحن + اشتراكات للمنشآت</p>
+            <div class="when">التجارة · تقدير ٦–١٢ شهراً</div>
+            <p>دفع + ضمان + شحن + اشتراكات للمنشآت</p><p class="phase-gate"><b>شرط البدء:</b> إثبات الحاجة وإتمام دراسة التشغيل والمتطلبات النظامية.</p>
           </div>
         </div>
       </div>
@@ -526,9 +489,10 @@
           <h2>فضلاً، شاركنا ملاحظاتك وتصورك المبدئي</h2>
           <p class="sub">أخبرنا بأي تعديل أو إضافة ترغب بها في التصور المبدئي حتى نبني المنتج بالشكل الذي تريده.</p>
           <form id="feedback-form">
+            <div class="honeypot" aria-hidden="true"><label>الموقع الإلكتروني<input name="website" id="fb-website" type="text" tabindex="-1" autocomplete="off" maxlength="200"></label></div>
             <div class="field-row">
-              <div class="field"><label for="fb-name">الاسم (اختياري)</label><input type="text" id="fb-name" name="الاسم" placeholder="اكتب اسمك"></div>
-              <div class="field"><label for="fb-contact">الهاتف أو البريد (اختياري)</label><input type="text" id="fb-contact" name="التواصل" placeholder="اكتب وسيلة التواصل"></div>
+              <div class="field"><label for="fb-name">الاسم (اختياري)</label><input type="text" maxlength="120" autocomplete="name" id="fb-name" name="الاسم" placeholder="اكتب اسمك"></div>
+              <div class="field"><label for="fb-contact">الهاتف أو البريد (اختياري)</label><input type="text" maxlength="200" id="fb-contact" name="التواصل" placeholder="اكتب وسيلة التواصل"></div>
             </div>
             <div class="field"><label for="fb-type">ما طبيعة ملاحظتك؟</label>
               <select id="fb-type" name="نوع الملاحظة">
@@ -539,8 +503,8 @@
                 <option>ملاحظة عامة</option>
               </select>
             </div>
-            <div class="field"><label for="fb-section">في أي قسم أو مسار الملاحظة؟</label><input type="text" id="fb-section" name="القسم" placeholder="مثال: سوق طبي، التبرعات، الوظائف، MVP…"></div>
-            <div class="field"><label for="fb-detail">تفصيل الملاحظة *</label><textarea id="fb-detail" name="تفصيل الملاحظة" placeholder="اكتب ما تود تعديله أو إضافته هنا…" required></textarea></div>
+            <div class="field"><label for="fb-section">في أي قسم أو مسار الملاحظة؟</label><input type="text" maxlength="160" id="fb-section" name="القسم" placeholder="مثال: سوق طبي، التبرعات، الوظائف، MVP…"></div>
+            <div class="field"><label for="fb-detail">تفصيل الملاحظة *</label><textarea maxlength="5000" id="fb-detail" name="تفصيل الملاحظة" placeholder="اكتب ما تود تعديله أو إضافته هنا…" required></textarea></div>
             <div class="field"><label for="fb-priority">الأولوية من وجهة نظرك</label>
               <select id="fb-priority" name="الأولوية">
                 <option>أولوية قصوى للإطلاق الأول</option>
@@ -548,8 +512,9 @@
                 <option>تحسين مستقبلي</option>
               </select>
             </div>
+            <p class="privacy-note">تُستخدم هذه البيانات لمراجعة ملاحظتك والتواصل بشأنها. يرجى عدم إدراج بيانات مرضى أو معلومات صحية شخصية.</p>
             <button type="submit" class="btn btn-primary" id="fb-submit">إرسال الملاحظة لريسبارك</button>
-            <div id="fb-status" style="margin-top:14px;font-size:13px;display:none;"></div>
+            <div role="status" aria-live="polite" id="fb-status" style="margin-top:14px;font-size:13px;display:none;"></div>
           </form>
         </div>
       </div>
@@ -558,106 +523,10 @@
 
   <footer class="footer"><div class="container footer-inner"><div><strong>سوق طبي</strong> — تصور مبدئي صادر من ريسبارك للحلول الرقمية</div><div>للنقاش والتطوير · إصدار تصوري أولي</div></div></footer>
 
-  <div id="ty-overlay">
-    <div class="ty-card">
-      <div class="ty-mark"></div>
-      <h3>شكراً لملاحظتك</h3>
-      <p>استلمنا ملاحظتك، وستُراجع من قبل فريق ريسبارك. ستعود للصفحة الرئيسية تلقائياً.</p>
-      <div class="ty-countdown">٣</div>
-    </div>
-  </div>
-
-<script>
-  // ===== Feedback form handler =====
-  (function () {
-    var form = document.getElementById('feedback-form');
-    if (!form) return;
-    var submitBtn = document.getElementById('fb-submit');
-    var statusDiv = document.getElementById('fb-status');
-
-    function showStatus(msg, ok) {
-      statusDiv.style.display = 'block';
-      statusDiv.style.color = ok ? '#0e7c6b' : '#c0392b';
-      statusDiv.textContent = msg;
-    }
-
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var detail = document.getElementById('fb-detail').value.trim();
-      if (!detail) {
-        showStatus('من فضلك اكتب تفصيل الملاحظة قبل الإرسال.', false);
-        return;
-      }
-      submitBtn.textContent = 'جارٍ الإرسال…';
-      submitBtn.disabled = true;
-      submitBtn.style.opacity = '.7';
-      statusDiv.style.display = 'none';
-
-      // Collect form data as JSON
-      var data = {
-        name: document.getElementById('fb-name').value,
-        contact: document.getElementById('fb-contact').value,
-        type: document.getElementById('fb-type').value,
-        section: document.getElementById('fb-section').value,
-        detail: document.getElementById('fb-detail').value,
-        priority: document.getElementById('fb-priority').value
-      };
-
-      // Submit via fetch to Vercel API (which writes to Supabase + triggers Telegram)
-      fetch('/api/feedback', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      }).then(function(res) {
-        if (res.ok) {
-          showThankYouOverlay();
-        } else {
-          showStatus('حدث خطأ، حاول مرة أخرى.', false);
-          submitBtn.textContent = 'إرسال الملاحظة لريسبارك';
-          submitBtn.disabled = false;
-          submitBtn.style.opacity = '1';
-        }
-      }).catch(function() {
-        showStatus('حدث خطأ، حاول مرة أخرى.', false);
-        submitBtn.textContent = 'إرسال الملاحظة لريسبارك';
-        submitBtn.disabled = false;
-        submitBtn.style.opacity = '1';
-      });
-    });
-
-    function showThankYouOverlay() {
-      var overlay = document.getElementById('ty-overlay');
-      if (!overlay) return;
-      overlay.classList.add('show');
-      var counter = document.querySelector('.ty-countdown');
-      var seconds = 3;
-      if (counter) counter.textContent = seconds;
-      var timer = setInterval(function () {
-        seconds--;
-        if (counter && seconds > 0) counter.textContent = seconds;
-        if (seconds <= 0) {
-          clearInterval(timer);
-          var cleanUrl = window.location.origin + window.location.pathname;
-          window.location.href = cleanUrl;
-        }
-      }, 1000);
-    }
-  })();
-
-  // ===== Segmented preview toggle =====
-  const modes = {
-    market: { search: 'ابحث عن جهاز أو مستلزم', note: 'كل إعلان يعرض الحالة والكمية والموقع قبل التفاصيل الثانوية.' },
-    donation: { search: 'ابحث عن تبرع أو جهة محتاجة', note: 'التبرع مسار مستقل: عرض واضح، مراجعة، مطابقة، ثم تأكيد استلام.' },
-    jobs: { search: 'ابحث عن تخصص أو فرصة عمل', note: 'الوظائف الطبية تعرض التخصص والمدينة ونوع الدوام مع احترام الخصوصية.' }
-  };
-  document.querySelectorAll('.segmented button').forEach(btn => btn.addEventListener('click', () => {
-    document.querySelectorAll('.segmented button').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
-    btn.classList.add('active'); btn.setAttribute('aria-selected', 'true');
-    const mode = modes[btn.dataset.mode];
-    document.getElementById('mode-search').textContent = mode.search;
-    document.getElementById('mode-note').textContent = mode.note;
-  }));
-</script>
-
+  <dialog id="ty-overlay" class="feedback-dialog" aria-labelledby="thanks-title">
+    <div class="ty-card"><div class="ty-mark" aria-hidden="true"></div><h3 id="thanks-title">شكراً لملاحظتك</h3><p>تم قبول ملاحظتك من خدمة الإرسال لمراجعتها من فريق ريسبارك.</p><form method="dialog"><button class="btn btn-primary" autofocus>العودة إلى التصور</button></form></div>
+  </dialog>
+  <dialog id="demo-dialog" class="feedback-dialog" aria-labelledby="demo-title"><div class="ty-card"><span class="demo-label">معاينة توضيحية</span><h3 id="demo-title"></h3><p id="demo-detail"></p><p>هذه بيانات تجريبية لشرح التجربة، ولا يتم إرسال طلب أو بدء تواصل فعلي.</p><form method="dialog"><button class="btn btn-primary" autofocus>إغلاق المعاينة</button></form></div></dialog>
+  <script src="/assets/app.js" defer></script>
 </body>
 </html>
