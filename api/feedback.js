@@ -27,11 +27,13 @@ function saveFeedback(payload) {
   });
 }
 
-function sendFeedbackEmail(data) {
+function sendFeedbackEmail(data, sourceOrigin) {
   // Preserve the destination already used by the production form.
   return new Promise((resolve, reject) => {
     const req = https.request('https://formsubmit.co/ajax/mutazima24@gmail.com', {
-      method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json',
+        Origin: sourceOrigin, Referer: `${sourceOrigin}/`,
+      },
     }, response => {
       let text = '';
       response.on('data', chunk => { text += chunk; });
@@ -39,9 +41,13 @@ function sendFeedbackEmail(data) {
       response.on('end', () => {
         try {
           const result = JSON.parse(text);
-          resolve(response.statusCode >= 200 && response.statusCode < 300 &&
-            (result.success === true || result.success === 'true'));
-        } catch { resolve(false); }
+          const accepted = response.statusCode >= 200 && response.statusCode < 300 &&
+            (result.success === true || result.success === 'true');
+          const message = String(result.message || '').toLowerCase();
+          const reason = /activat|confirm.*email/.test(message) ? 'activation_required'
+            : /referer|referrer|web server|html file/.test(message) ? 'source_required' : 'provider_rejected';
+          resolve({ accepted, reason, status: response.statusCode });
+        } catch { resolve({ accepted: false, reason: 'invalid_provider_response', status: response.statusCode }); }
       });
     });
     req.setTimeout(8000, () => req.destroy(new Error('Delivery timeout')));
@@ -49,9 +55,9 @@ function sendFeedbackEmail(data) {
     req.end(JSON.stringify({
       _subject: 'ملاحظة جديدة على تصور سوق طبي — ريسبارك',
       _captcha: 'false', _template: 'table',
-      'اسم العميل': data.name, 'وسيلة التواصل': data.contact,
+      name: data.name || 'زائر', 'وسيلة التواصل': data.contact,
       'نوع الملاحظة': data.type, 'القسم': data.section,
-      'تفصيل الملاحظة': data.detail, 'الأولوية': data.priority,
+      message: data.detail, 'الأولوية': data.priority,
     }));
   });
 }
@@ -104,8 +110,12 @@ module.exports = async (req, res) => {
   }
   try {
     if (provider === 'formsubmit') {
-      const accepted = await sendFeedbackEmail(data);
-      if (!accepted) return res.status(502).json({ error: 'Delivery not confirmed' });
+      const delivery = await sendFeedbackEmail(data, origin || 'https://suq-tibbi.vercel.app');
+      if (!delivery.accepted) {
+        // Log only diagnostic categories; never log submitted data or the recipient.
+        console.error('Feedback email rejected', delivery.status, delivery.reason);
+        return res.status(502).json({ error: 'Delivery not confirmed', code: delivery.reason });
+      }
       return res.status(201).json({ success: true });
     }
     const status = await saveFeedback({

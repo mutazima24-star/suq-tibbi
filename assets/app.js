@@ -85,6 +85,10 @@ form.addEventListener('submit', async event => {
     const response = await fetch('/api/feedback', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data), signal: controller.signal });
     const result = await response.json().catch(() => null);
     if (!response.ok || result?.success !== true) {
+      if (result?.code === 'activation_required') {
+        showStatus('خدمة البريد بحاجة إلى تفعيل من إدارة الموقع. احتفظنا بملاحظتك هنا ولم نؤكد إرسالها.');
+        return;
+      }
       showStatus(response.status === 429 ? 'وصلت إلى حد المحاولات المتتابعة. انتظر دقيقة ثم حاول مجدداً.' : 'تعذر تأكيد إرسال الملاحظة. احتفظنا بالنص هنا؛ حاول مرة أخرى بعد قليل.');
       return;
     }

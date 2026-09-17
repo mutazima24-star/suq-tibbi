@@ -4,12 +4,12 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 const source = fs.readFileSync(require.resolve('../api/feedback.js'), 'utf8');
 function setup({ databaseStatus = 201, key = 'test-only', networkError = false, provider = 'supabase', emailResponse = { success: true } } = {}) {
-  let writes = 0;
+  let writes = 0; let requestOptions; let payload;
   const transport = { request(url, options, callback) {
-    const handlers = {};
+    requestOptions = options; const handlers = {};
     return {
       setTimeout() {}, on(event, fn) { handlers[event] = fn; },
-      end() { writes++; if (networkError) return handlers.error(new Error('offline'));
+      end(body) { payload = JSON.parse(body); writes++; if (networkError) return handlers.error(new Error('offline'));
         callback({ statusCode: databaseStatus, resume() {}, on(event, fn) { if(event === 'data') fn(JSON.stringify(emailResponse)); if (event === 'end') fn(); } });
       }
     };
@@ -22,7 +22,7 @@ function setup({ databaseStatus = 201, key = 'test-only', networkError = false, 
       const res = { setHeader(k,v) { result.headers[k] = v; }, status(n) { result.status = n; return this; }, json(v) { result.body = v; return this; } };
       await ctx.module.exports({ method: 'POST', headers: { host: 'example.com', origin: 'https://example.com', 'content-type': 'application/json' }, body, ...overrides }, res);
       return result;
-    }, writes: () => writes
+    }, writes: () => writes, options: () => requestOptions, payload: () => payload
   };
 }
 test('confirms only a successful database insert', async () => { const h = setup(); const r = await h.send(); assert.equal(r.status,201); assert.equal(r.body.success,true); assert.equal(h.writes(),1); });
@@ -37,3 +37,7 @@ test('GET never inserts',async()=>{const h=setup();assert.equal((await h.send(un
 test('email provider works without a database key',async()=>{assert.equal((await setup({provider:'formsubmit',key:''}).send()).status,201);});
 test('email rejection does not produce a success',async()=>{assert.equal((await setup({provider:'formsubmit',emailResponse:{success:false}}).send()).status,502);});
 test('email HTTP error does not produce a success',async()=>{assert.equal((await setup({provider:'formsubmit',databaseStatus:500}).send()).status,502);});
+
+test('email includes the validated source and standard message field',async()=>{const h=setup({provider:'formsubmit'});await h.send({name:'Test',detail:'Local test'});assert.equal(h.options().headers.Origin,'https://example.com');assert.equal(h.options().headers.Referer,'https://example.com/');assert.equal(h.payload().message,'Local test');});
+test('activation requirement is not accepted',async()=>{const r=await setup({provider:'formsubmit',emailResponse:{success:false,message:'Please activate your form'}}).send();assert.equal(r.status,502);assert.equal(r.body.code,'activation_required');});
+test('source error is categorized without exposing provider text',async()=>{const r=await setup({provider:'formsubmit',emailResponse:{success:false,message:'Open this page through a web server'}}).send();assert.equal(r.status,502);assert.equal(r.body.code,'source_required');});

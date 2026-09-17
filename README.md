@@ -21,3 +21,9 @@ The API validates field types/lengths, checks browser origin, uses an 8-second u
 ## Deployment provenance
 
 At the start of this review, production was deployed through CLI and contained uncommitted FormSubmit changes, while GitHub still contained a Supabase form. This revision reconciles that difference by preserving the live email route and retaining the database option explicitly. Deploy a Git commit and verify its assets and interactions before promotion. Live form submissions send a real notification; automated tests must mock the providers.
+
+## Mobile and provider follow-up
+
+The desktop navigation selector had higher CSS specificity than the mobile hiding rule. Mobile rules now target `.topbar .nav` explicitly. Flex items that must remain visible do not shrink and grid children can shrink to their available width.
+
+FormSubmit requests now include the validated source origin/referrer and the standard `name`/`message` fields. Provider failures are categorized (activation, missing source, invalid response, or rejection) without logging submitted content. This is a compatibility change pending an explicitly authorized real submission; mocked tests cannot prove provider acceptance or inbox delivery.
