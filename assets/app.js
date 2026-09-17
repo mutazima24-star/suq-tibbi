@@ -82,10 +82,12 @@ form.addEventListener('submit', async event => {
   const timer = setTimeout(() => controller.abort(), 15000);
   try {
     const data = Object.fromEntries(['name', 'contact', 'type', 'section', 'detail', 'priority', 'website'].map(key => [key, document.getElementById(`fb-${key}`).value.trim()]));
-    const response = await fetch('/api/feedback', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data), signal: controller.signal });
+    if (data.website) { showStatus('تعذر إرسال الملاحظة.'); return; }
+    const payload = { name: data.name || 'زائر الموقع', message: data.detail, contact: data.contact, type: data.type, section: data.section, priority: data.priority, _subject: 'ملاحظة جديدة — سوق طبي', _template: 'table', _captcha: 'false', _honey: data.website };
+    const response = await fetch('https://formsubmit.co/ajax/mutazima24@gmail.com', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(payload), signal: controller.signal });
     const result = await response.json().catch(() => null);
-    if (!response.ok || result?.success !== true) {
-      if (result?.code === 'activation_required') {
+    if (!response.ok || ![true, 'true'].includes(result?.success)) {
+      if (/activat|confirm.*email/i.test(result?.message || '')) {
         showStatus('خدمة البريد بحاجة إلى تفعيل من إدارة الموقع. احتفظنا بملاحظتك هنا ولم نؤكد إرسالها.');
         return;
       }

@@ -12,11 +12,11 @@ Static HTML/CSS/JavaScript plus a Vercel Node function. No frontend build is nee
 
 ## Feedback configuration
 
-The default `FEEDBACK_PROVIDER=formsubmit` preserves the email destination observed on the existing production site. It verifies the provider's JSON success response rather than showing success on a timer. Provider acceptance does not prove inbox delivery. Activation, if required, is managed by the email owner.
+The visible form uses the documented FormSubmit browser AJAX endpoint, preserving the email destination observed on the existing production site. Server-to-provider requests were rejected with HTTP 403 during the authorized delivery test. It verifies the provider's JSON success response rather than showing success on a timer. Provider acceptance does not prove inbox delivery. Activation, if required, is managed by the email owner.
 
-The repository's prior Supabase path remains available only when explicitly selected with `FEEDBACK_PROVIDER=supabase`. Set `SUPABASE_SERVICE_ROLE_KEY` in the deployment environment; optional `SUPABASE_URL` overrides the existing project URL. Never commit credentials. The expected `suq_tibbi_feedback` schema is unchanged. No automatic provider fallback is used, avoiding duplicate submissions after ambiguous failures.
+The separate `/api/feedback` endpoint is not called by the visible form. Its prior Supabase path remains available only when explicitly selected with `FEEDBACK_PROVIDER=supabase`. Set `SUPABASE_SERVICE_ROLE_KEY` in the deployment environment; optional `SUPABASE_URL` overrides the existing project URL. Never commit credentials. The expected `suq_tibbi_feedback` schema is unchanged. No automatic provider fallback is used, avoiding duplicate submissions after ambiguous failures.
 
-The API validates field types/lengths, checks browser origin, uses an 8-second upstream timeout, rejects the honeypot, and limits bursts in each function instance. The in-memory limiter is not a global or durable limit; use a shared limiter or platform firewall before a public launch. Errors retain the draft in the page. A successful response opens an accessible dismissible dialog without redirecting.
+The optional API (not the direct browser route) validates field types/lengths, checks browser origin, uses an 8-second upstream timeout, rejects the honeypot, and limits bursts in each function instance. The in-memory limiter is not a global or durable limit; use a shared limiter or platform firewall before a public launch. Errors retain the draft in the page. A successful response opens an accessible dismissible dialog without redirecting.
 
 ## Deployment provenance
 
@@ -26,4 +26,4 @@ At the start of this review, production was deployed through CLI and contained u
 
 The desktop navigation selector had higher CSS specificity than the mobile hiding rule. Mobile rules now target `.topbar .nav` explicitly. Flex items that must remain visible do not shrink and grid children can shrink to their available width.
 
-FormSubmit requests now include the validated source origin/referrer and the standard `name`/`message` fields. Provider failures are categorized (activation, missing source, invalid response, or rejection) without logging submitted content. This is a compatibility change pending an explicitly authorized real submission; mocked tests cannot prove provider acceptance or inbox delivery.
+The browser sends standard `name`/`message` fields and checks both HTTP status and FormSubmit JSON success. Failed or ambiguous responses retain the draft; no timed success or automatic retries are used. Provider acceptance and inbox delivery must be verified separately.
