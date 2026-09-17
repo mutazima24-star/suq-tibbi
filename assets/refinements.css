@@ -22,9 +22,9 @@ section { scroll-margin-top:95px; }
 .search-input { min-width:0;padding:0; }
 .search-input input { width:100%;min-width:0;border:0;border-radius:9px;background:#fff;font:inherit;color:var(--ink);padding:12px;min-height:46px; }
 .filter { min-height:46px;max-width:120px;border:1px solid var(--line);font-size:13px; }
-.listing-image { height:150px;background:#e9f3f0;display:grid;place-items:center; }
+.listing-image { height:150px;background:#e9f3f0;display:block;overflow:hidden; }
 .listing-image::before,.listing-image::after { content:none; }
-.listing-image img { width:100%;height:100%;object-fit:contain; }
+.listing-image img { display:block;width:100%;height:100%;object-fit:contain; }
 .listing-body { padding:14px; }
 .mock-title { font-size:15px;line-height:1.6;margin:0 0 6px; }
 .mock-meta { display:block;font-size:12px;margin:0 0 3px; }
