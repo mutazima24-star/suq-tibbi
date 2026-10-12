@@ -4,78 +4,98 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="description" content="سوق طبي: سوق إعلانات مبوّبة متخصص للقطاع الصحي في السعودية، مشروع من ريسبارك للحلول الرقمية. نسخة عرض للمستثمرين.">
-  <meta name="theme-color" content="#072331">
+  <meta name="theme-color" content="#061a24">
   <title>سوق طبي · مشروع من ريسبارك</title>
   <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/intro.css?v=20261012b">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/intro.css?v=20261012c">
   <link rel="prefetch" href="/market">
   <link rel="prefetch" href="/assets/market.css?v=20261012b">
-  <link rel="prefetch" href="/assets/data.js?v=20261012">
+  <link rel="prefetch" href="/assets/market.js?v=20261012">
 </head>
 <body>
   <div id="pageProgress" aria-hidden="true"></div>
-  <main class="intro" id="intro">
-    <header class="top rv" style="--i:0">
-      <img class="rs-logo" src="/assets/brand/respark-full.svg" alt="Respark Digital Solutions" width="160" height="64">
-      <span class="top-tag">نسخة عرض للمستثمرين · أكتوبر 2026</span>
+  <div class="bg" aria-hidden="true">
+    <canvas id="fx"></canvas>
+    <i class="orb orb-a"></i><i class="orb orb-b"></i><i class="orb orb-c"></i>
+    <i class="grid"></i>
+  </div>
+
+  <main class="stage" id="intro">
+    <header class="presents">
+      <img src="/assets/brand/respark-full-light.svg" alt="Respark Digital Solutions" width="150" height="60">
+      <span>تقدّم</span>
     </header>
 
-    <section class="hero">
-      <div class="hero-copy">
-        <p class="eyebrow rv" style="--i:1"><span class="spark" aria-hidden="true"></span>مشروع تطوّره ريسبارك للحلول الرقمية</p>
-        <h1 class="rv" style="--i:2"><img src="/assets/logo.svg" width="56" height="56" alt=""> سوق طبي</h1>
-        <p class="lead rv" style="--i:3">أول سوق إعلانات مبوّبة متخصص للقطاع الصحي في السعودية. يلتقي فيه بائعو ومشترو الأجهزة والمستلزمات الطبية، والعيادات، والوظائف الصحية في مكان واحد موثوق وسهل.</p>
-        <ul class="pillars">
-          <li class="rv" style="--i:4"><b>الفرصة</b><span>تجارة الأجهزة والمستلزمات الطبية المستعملة اليوم مبعثرة بين أسواق عامة ومجموعات واتساب، بلا تصنيف ولا توثيق.</span></li>
-          <li class="rv" style="--i:5"><b>الحل</b><span>سوق متخصص بأقسام طبية، وفلاتر بالمدينة والحالة والسعر، وحسابات موثّقة للمتاجر والعيادات.</span></li>
-          <li class="rv" style="--i:6"><b>نموذج الدخل المقترح</b><span>إعلانات مميّزة ومثبّتة، واشتراكات للمتاجر، وعمولة اختيارية على الصفقات الموثّقة.</span></li>
-        </ul>
+    <section class="copy" aria-labelledby="t">
+      <div class="title-row">
+        <span class="mark"><img src="/assets/logo.svg" alt="" width="72" height="72"><i class="mark-ring"></i></span>
+        <h1 id="t" class="title" aria-label="سوق طبي"><span aria-hidden="true">سوق طبي</span></h1>
+      </div>
+      <p class="tag" data-words>أول سوق إعلانات مبوّبة متخصص للقطاع الصحي في السعودية</p>
+      <ul class="chips" aria-label="ما يجمعه السوق">
+        <li style="--i:0">أجهزة ومستلزمات طبية</li>
+        <li style="--i:1">عيادات للبيع والتقبيل</li>
+        <li style="--i:2">وظائف صحية</li>
+        <li style="--i:3">حسابات موثّقة</li>
+      </ul>
+
+      <div class="stats" aria-label="أرقام النسخة التجريبية">
+        <div class="stat" style="--i:0"><b data-count="9">0</b><span>أقسام طبية</span></div>
+        <div class="stat" style="--i:1"><b data-count="44">0</b><span>إعلاناً تجريبياً</span></div>
+        <div class="stat" style="--i:2"><b data-count="15">0</b><span>مدينة سعودية</span></div>
+        <div class="stat" style="--i:3"><b data-count="3">0</b><span>واجهات متجاوبة</span></div>
       </div>
 
-      <aside class="count-card rv" style="--i:3" aria-labelledby="count-title">
-        <p class="count-k" id="count-title">الانتقال إلى النسخة التجريبية خلال</p>
-        <div class="ring" role="timer" aria-live="off">
-          <svg viewBox="0 0 120 120" aria-hidden="true">
-            <circle class="ring-bg" cx="60" cy="60" r="52"/>
-            <circle class="ring-fg" id="ring-fg" cx="60" cy="60" r="52" pathLength="1"/>
-          </svg>
-          <div class="ring-num"><b id="count-num">7</b><span id="count-unit">ثوانٍ</span></div>
-        </div>
-        <div class="bar" aria-hidden="true"><i id="count-bar"></i></div>
-        <p class="sr-only" id="count-sr" aria-live="polite"></p>
-        <div class="count-actions">
-          <a class="btn-go" id="go" href="/market">ادخل السوق الآن</a>
-          <button type="button" class="btn-pause" id="pause" aria-pressed="false">إيقاف العدّ</button>
-        </div>
-        <p class="count-note">كل الإعلانات والحسابات في النسخة التجريبية أمثلة توضيحية.</p>
-      </aside>
-    </section>
-
-    <section class="stats" aria-label="أرقام النسخة التجريبية">
-      <div class="stat rv" style="--i:7"><b data-to="9">9</b><span>أقسام طبية رئيسية</span></div>
-      <div class="stat rv" style="--i:8"><b data-to="44">44</b><span>إعلاناً تجريبياً واقعياً</span></div>
-      <div class="stat rv" style="--i:9"><b data-to="15">15</b><span>مدينة سعودية</span></div>
-      <div class="stat rv" style="--i:10"><b data-to="3">3</b><span>واجهات: جوال وتابلت وكمبيوتر</span></div>
-    </section>
-
-    <section class="tour" aria-labelledby="tour-title">
-      <h2 id="tour-title" class="rv" style="--i:11">ما الذي ستجربه في النسخة التجريبية</h2>
-      <div class="tour-grid">
-        <article class="rv" style="--i:12"><span class="n">01</span><h3>تصفّح وفلترة</h3><p>أقسام وأقسام فرعية، وفلاتر بالمدينة والحالة ونطاق السعر، وبحث عربي ذكي.</p></article>
-        <article class="rv" style="--i:13"><span class="n">02</span><h3>صفحة إعلان كاملة</h3><p>صور ومواصفات، وردود الزوار، وتواصل مباشر مع المعلن، وإعلانات مشابهة.</p></article>
-        <article class="rv" style="--i:14"><span class="n">03</span><h3>نشر إعلان بثلاث خطوات</h3><p>اختيار القسم، ثم التفاصيل والصور، ثم المراجعة والنشر خلال دقيقة.</p></article>
-        <article class="rv" style="--i:15"><span class="n">04</span><h3>ملاحظاتك تصل لفريقنا</h3><p>زر «ملاحظاتك» في كل صفحة يرسل رأيك مباشرة إلى لوحة ريسبارك.</p></article>
+      <div class="pillars">
+        <article style="--i:0"><span class="k">الفرصة</span><p>تجارة الأجهزة الطبية المستعملة مبعثرة بين أسواق عامة ومجموعات واتساب، بلا تصنيف ولا توثيق.</p></article>
+        <article style="--i:1"><span class="k">الحل</span><p>سوق متخصص بأقسام طبية وفلاتر بالمدينة والحالة والسعر، وحسابات موثّقة للمتاجر والعيادات.</p></article>
+        <article style="--i:2"><span class="k">نموذج الدخل المقترح</span><p>إعلانات مميّزة ومثبّتة، واشتراكات للمتاجر، وعمولة اختيارية على الصفقات الموثّقة.</p></article>
       </div>
     </section>
 
-    <footer class="foot rv" style="--i:16">
-      <img src="/assets/brand/respark-full.svg" alt="" width="110" height="44">
-      <span>صُمّم وطُوّر بواسطة Respark Digital Solutions W.L.L</span>
-    </footer>
+    <section class="device-wrap" aria-label="لمحة من النسخة التجريبية">
+      <i class="halo" aria-hidden="true"></i>
+      <div class="device">
+        <div class="screen">
+          <div class="s-hdr"><img src="/assets/logo.svg" alt="" width="18" height="18"><span>ابحث في سوق طبي</span></div>
+          <div class="s-cats" aria-hidden="true"><i class="on">الكل</i><i>أجهزة</i><i>رعاية منزلية</i><i>أسنان</i><i>تجميل</i></div>
+          <div class="s-feed"><div class="s-track" id="feed"></div></div>
+          <div class="s-nav" aria-hidden="true"><i></i><i></i><b>+</b><i></i><i></i></div>
+        </div>
+        <i class="notch" aria-hidden="true"></i>
+      </div>
+      <ul class="pops" aria-hidden="true">
+        <li class="p1"><b>✓</b>نُشر إعلان: كرسي متحرك كهربائي · الرياض</li>
+        <li class="p2"><b>💬</b>رسالة جديدة من «متجر صحتك»</li>
+        <li class="p3"><b>★</b>حساب موثّق · مركز نبض للصيانة</li>
+        <li class="p4"><b>♥</b>12 شخصاً أضافوا إعلانك للمفضلة</li>
+      </ul>
+    </section>
   </main>
-  <script src="/assets/intro.js?v=20261012b" defer></script>
+
+  <aside class="hud" aria-labelledby="hud-k">
+    <div class="hud-ring" role="timer" aria-live="off">
+      <svg viewBox="0 0 60 60" aria-hidden="true"><circle class="r-bg" cx="30" cy="30" r="26"/><circle class="r-fg" id="ring" cx="30" cy="30" r="26" pathLength="1"/></svg>
+      <b id="num">15</b>
+    </div>
+    <div class="hud-txt">
+      <p id="hud-k">تنتقل إلى النسخة التجريبية خلال <b id="left">15 ثانية</b></p>
+      <div class="segs" id="segs" aria-hidden="true"></div>
+    </div>
+    <div class="hud-act">
+      <a class="go" id="go" href="/market">ادخل السوق الآن <span aria-hidden="true">←</span></a>
+      <button type="button" class="pause" id="pause" aria-pressed="false" aria-label="إيقاف العدّ مؤقتاً"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="ic-pause" d="M8 5v14M16 5v14"/><path class="ic-play" d="M8 5l11 7-11 7z"/></svg></button>
+    </div>
+    <p class="sr-only" id="sr" aria-live="polite"></p>
+  </aside>
+
+  <p class="credit">نسخة عرض للمستثمرين · كل الإعلانات أمثلة توضيحية · صُمّم وطُوّر بواسطة Respark Digital Solutions W.L.L</p>
+
+  <script src="/assets/illustrations.js?v=20261012" defer></script>
+  <script src="/assets/data.js?v=20261012" defer></script>
+  <script src="/assets/intro.js?v=20261012c" defer></script>
 </body>
 </html>
