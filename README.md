@@ -1,6 +1,6 @@
 # سوق طبي — marketplace demo
 
-`index.html` is the Respark intro page: a short project overview with a 7-second countdown that hands over to the marketplace at `/market`.
+`index.html` is the Respark intro page: a short project overview with a 15-second countdown that hands over to the marketplace at `/market`.
 
 `market.html` (served at `/market`) is an Arabic RTL classified-ads marketplace demo (mobile, tablet and desktop) for medical devices, supplies, clinics, jobs, services and donations. Its layout follows the familiar Saudi classifieds pattern: category tabs, sub-category chips, city and sort filters, a list feed, ad pages with replies, posting, favorites, messages and an account page.
 
