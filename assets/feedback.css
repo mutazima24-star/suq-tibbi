@@ -1,0 +1,78 @@
+/* Feedback widget: Respark navy + spark gold, Shadad page motion. Uses the market theme tokens. */
+.fb-fab {
+  position: fixed; left: 18px; bottom: 22px; z-index: 60;
+  display: inline-flex; align-items: center; gap: 8px; border: 0; border-radius: 999px;
+  background: #072331; color: #fff; padding: 11px 16px 11px 18px; font-weight: 600; font-size: 14px;
+  box-shadow: 0 10px 26px -10px rgb(7 35 49 / .7), 0 0 0 3px rgb(252 184 86 / .35);
+  transition: transform .28s cubic-bezier(.2, .8, .2, 1), box-shadow .28s ease;
+  animation: fbPop .55s cubic-bezier(.2, .8, .2, 1) .6s both;
+}
+.fb-fab svg { width: 20px; height: 20px; color: #fcb856; }
+.fb-fab:hover { transform: translateY(-2px); box-shadow: 0 14px 30px -10px rgb(7 35 49 / .75), 0 0 0 4px rgb(252 184 86 / .55); }
+@keyframes fbPop { from { opacity: 0; transform: translateY(14px) scale(.9); } to { opacity: 1; transform: none; } }
+html.fb-open .fb-fab { visibility: hidden; }
+html.fb-open, html.fb-open body { overflow: hidden; }
+
+.fb { position: fixed; inset: 0; z-index: 90; background: var(--bg); overflow-y: auto; overscroll-behavior: contain; }
+.fb.enter-fwd { animation: pageInF .46s cubic-bezier(.2, .8, .2, 1) both; }
+.fb.leaving { animation: pageOut .15s ease-in both; }
+@keyframes pageInF { from { opacity: 0; transform: translateX(-26px); } to { opacity: 1; transform: none; } }
+@keyframes pageOut { to { opacity: 0; transform: translateY(6px); } }
+.fb .rv { animation: rise .55s cubic-bezier(.2, .8, .2, 1) both; animation-delay: calc(var(--i, 0) * 45ms + 60ms); }
+@keyframes rise { from { opacity: 0; transform: translateY(14px) scale(.985); } to { opacity: 1; transform: none; } }
+.fb-progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: #fcb856; transform-origin: right center; opacity: 0; transform: scaleX(0); z-index: 95; pointer-events: none; }
+.fb-progress.run { animation: prog .6s cubic-bezier(.3, .7, .2, 1) both; }
+@keyframes prog { 0% { opacity: 1; transform: scaleX(0); } 70% { opacity: 1; transform: scaleX(.85); } 100% { opacity: 0; transform: scaleX(1); } }
+
+.fb-in { width: min(720px, 100% - 32px); margin: 0 auto; padding: 20px 0 48px; }
+.fb-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 22px; }
+.fb-x { display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 999px; padding: 7px 14px 7px 12px; font-size: 14px; font-weight: 500; }
+.fb-x svg { width: 18px; height: 18px; }
+.fb-rs { width: 96px; height: auto; }
+:root[data-theme="dark"] .fb-rs { content: url("/assets/brand/respark-full-light.svg"); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .fb-rs { content: url("/assets/brand/respark-full-light.svg"); } }
+.fb h2 { font-size: clamp(24px, 3.4vw, 32px); line-height: 1.3; margin: 0 0 8px; color: var(--ink); }
+.fb-lead { color: var(--ink-2); margin: 0 0 22px; }
+.fb-form { display: grid; gap: 16px; background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 20px; box-shadow: var(--shadow); }
+.fb-types { border: 0; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.fb-types legend { font-weight: 600; font-size: 14px; margin-bottom: 8px; padding: 0; }
+.fb-types label { position: relative; }
+.fb-types input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.fb-types span { display: inline-block; padding: 8px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--soft); font-size: 14px; font-weight: 500; }
+.fb-types input:checked + span { background: #072331; border-color: #072331; color: #fff; box-shadow: inset 0 -2px 0 #fcb856; }
+.fb-types input:focus-visible + span { outline: 2px solid var(--brand); outline-offset: 2px; }
+.fb-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.fb-f { display: grid; gap: 6px; font-size: 14px; font-weight: 600; }
+.fb-f b { color: var(--danger); }
+.fb-f input, .fb-f select, .fb-f textarea { width: 100%; border: 1px solid var(--line); background: var(--bg); border-radius: 12px; padding: 10px 12px; font-weight: 400; font-size: 15px; }
+.fb-f textarea { resize: vertical; min-height: 130px; line-height: 1.7; }
+.fb-f input:focus, .fb-f select:focus, .fb-f textarea:focus { outline: 2px solid #fcb856; outline-offset: 0; border-color: transparent; }
+.fb-f [aria-invalid="true"] { border-color: var(--danger); }
+.fb-err { color: var(--danger); font-weight: 500; font-size: 13px; }
+.fb-hp { position: absolute; left: -9999px; width: 1px; height: 1px; }
+.fb-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.fb-send { border: 0; background: #072331; color: #fff; border-radius: 12px; padding: 12px 22px; font-weight: 700; font-size: 15px; box-shadow: inset 0 -3px 0 #fcb856; }
+.fb-send:disabled { opacity: .7; cursor: progress; }
+.fb-cancel { border: 1px solid var(--line); background: transparent; color: var(--ink); border-radius: 12px; padding: 12px 18px; font-weight: 500; }
+.fb-status { margin: 0; font-size: 14px; min-height: 1px; }
+.fb-status.bad { color: var(--danger); }
+.fb-done { text-align: center; padding-top: 12vh; }
+.fb-done .fb-actions { justify-content: center; }
+.fb-check { width: 76px; height: 76px; border-radius: 50%; margin: 0 auto 18px; background: #072331; color: #fcb856; display: grid; place-items: center; box-shadow: 0 0 0 8px rgb(252 184 86 / .2); }
+.fb-check svg { width: 40px; height: 40px; }
+:root[data-theme="dark"] .fb-types input:checked + span, :root[data-theme="dark"] .fb-send { background: #0d3346; }
+
+/* Entrance into the market from the intro page */
+html.st-enter .hdr, html.st-enter #app { animation: pageInF .46s cubic-bezier(.2, .8, .2, 1) both; }
+html.st-enter #app { animation-delay: 60ms; }
+
+@media (max-width: 760px) {
+  .fb-fab { left: 12px; bottom: calc(72px + env(safe-area-inset-bottom)); padding: 10px 14px; font-size: 13px; }
+  .fb-fab.raised { bottom: calc(136px + env(safe-area-inset-bottom)); }
+  .fb-row { grid-template-columns: 1fr; }
+  .fb-form { padding: 16px; }
+  .fb-actions > button { flex: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fb-fab, .fb.enter-fwd, .fb.leaving, .fb .rv, .fb-progress.run, html.st-enter .hdr, html.st-enter #app { animation: none !important; }
+}

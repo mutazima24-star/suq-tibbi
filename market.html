@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="سوق طبي — أكبر سوق إعلانات مبوبة للأجهزة والمستلزمات الطبية والعيادات والوظائف الصحية في السعودية.">
+  <meta name="theme-color" content="#ffffff">
+  <title>سوق طبي | إعلانات الأجهزة والمستلزمات الطبية</title>
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/market.css?v=20261012b">
+  <link rel="stylesheet" href="/assets/feedback.css?v=20261012b">
+  <script>try { const t = localStorage.getItem('st-theme'); if (t) document.documentElement.dataset.theme = t; if (sessionStorage.getItem('st-enter')) { sessionStorage.removeItem('st-enter'); document.documentElement.classList.add('st-enter'); } } catch {}</script>
+</head>
+<body>
+  <a class="skip-link" href="#app">تجاوز إلى المحتوى</a>
+  <div class="demo-strip" id="demo-strip">
+    <span>نسخة عرض تجريبية — جميع الإعلانات والأسعار والحسابات أمثلة توضيحية.</span>
+    <button type="button" aria-label="إخفاء التنبيه" data-action="hide-strip">✕</button>
+  </div>
+
+  <header class="hdr">
+    <div class="wrap hdr-in">
+      <a class="logo" href="#/" aria-label="سوق طبي — الرئيسية">
+        <img src="/assets/logo.svg" width="36" height="36" alt="">
+        <span>سوق طبي</span>
+      </a>
+      <form class="search" id="search-form" role="search">
+        <svg class="i" aria-hidden="true"><use href="#i-search"/></svg>
+        <input id="q" type="search" placeholder="ابحث في سوق طبي" autocomplete="off" aria-label="ابحث في الإعلانات">
+        <button type="submit" class="search-go">بحث</button>
+      </form>
+      <div class="hdr-actions">
+        <button type="button" class="icon-btn" data-action="theme" aria-label="الوضع الليلي"><svg class="i"><use href="#i-moon"/></svg></button>
+        <a class="icon-btn hide-sm" href="#/messages" aria-label="الرسائل"><svg class="i"><use href="#i-chat"/></svg><b class="dot" id="msg-dot" hidden></b></a>
+        <button type="button" class="icon-btn hide-sm" data-action="notifs" aria-label="التنبيهات"><svg class="i"><use href="#i-bell"/></svg><b class="dot">3</b></button>
+        <a class="btn-add hide-sm" href="#/new"><svg class="i"><use href="#i-plus"/></svg>أضف إعلان</a>
+        <button type="button" class="btn-login" id="login-btn" data-action="account">دخول</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="app" tabindex="-1"></main>
+
+  <footer class="ftr">
+    <div class="wrap ftr-in">
+      <div class="ftr-brand"><img src="/assets/logo.svg" width="28" height="28" alt=""> <b>سوق طبي</b><p>سوق إعلانات مبوبة متخصص في القطاع الصحي: أجهزة، مستلزمات، عيادات، وظائف، وتبرعات.</p></div>
+      <nav class="ftr-links" aria-label="روابط">
+        <a href="#/">الرئيسية</a><a href="#/new">أضف إعلان</a><a href="#/favorites">المفضلة</a><a href="#/about">عن سوق طبي</a><a href="#/about">شروط الاستخدام</a><a href="/">عن المشروع</a><a href="/concept.html">التصور المبدئي</a>
+      </nav>
+      <p class="ftr-copy">© 2026 سوق طبي · نسخة عرض تجريبية من <a href="/">ريسبارك للحلول الرقمية</a></p>
+    </div>
+  </footer>
+
+  <nav class="bnav" aria-label="التنقل السفلي">
+    <a href="#/" data-tab="home"><svg class="i"><use href="#i-home"/></svg><span>الرئيسية</span></a>
+    <a href="#/messages" data-tab="messages"><svg class="i"><use href="#i-chat"/></svg><span>الرسائل</span></a>
+    <a href="#/new" class="bnav-add" data-tab="new" aria-label="أضف إعلان"><svg class="i"><use href="#i-plus"/></svg></a>
+    <a href="#/favorites" data-tab="favorites"><svg class="i"><use href="#i-heart"/></svg><span>المفضلة</span></a>
+    <a href="#/account" data-tab="account"><svg class="i"><use href="#i-user"/></svg><span>حسابي</span></a>
+  </nav>
+
+  <dialog id="dlg" class="dlg" aria-labelledby="dlg-title"><div class="dlg-card" id="dlg-body"></div></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m20 20-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-heart-f" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" fill="currentColor"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 21a8 8 0 0 1 16 0" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="9.5" r="2.5" fill="currentColor"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-filter" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="6" cy="12" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="19" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="m8.2 10.8 7.6-4.4M8.2 13.2l7.6 4.4" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4h11l-2 4 2 4H5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="m7.5 12.5 3 3 6-6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z" fill="currentColor"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.5" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="c-all" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="13" y="4" width="7" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="4" y="13" width="7" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="13" y="13" width="7" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="c-pulse" viewBox="0 0 24 24"><path d="M3 12h4l2-5 4 10 2-5h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="c-wheelchair" viewBox="0 0 24 24"><circle cx="10" cy="16" r="5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 4v8h7l2 6h2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="c-tooth" viewBox="0 0 24 24"><path d="M7 4c-3 0-4 3-3 6 1 2 1 5 2 8 .5 2 2.5 2 3-1l1-4h4l1 4c.5 3 2.5 3 3 1 1-3 1-6 2-8 1-3 0-6-3-6-2 0-3 1-5 1S9 4 7 4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="c-spark" viewBox="0 0 24 24"><path d="M12 3v5M12 16v5M3 12h5M16 12h5M6 6l3 3M15 15l3 3M18 6l-3 3M9 15l-3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="c-box" viewBox="0 0 24 24"><path d="M3 8 12 3l9 5v8l-9 5-9-5zM3 8l9 5 9-5M12 13v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="c-building" viewBox="0 0 24 24"><path d="M4 21V5h16v16M9 21v-4h6v4M12 8v4M10 10h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+    <symbol id="c-badge" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="11" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8.5 17a4 4 0 0 1 7 0" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="c-wrench" viewBox="0 0 24 24"><path d="M14 6a4 4 0 0 0 5 5l-9 9a2 2 0 0 1-3-3l9-9a4 4 0 0 0-2-2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="c-heart" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+  </svg>
+
+  <script src="/assets/illustrations.js?v=20261012" defer></script>
+  <script src="/assets/data.js?v=20261012" defer></script>
+  <script src="/assets/market.js?v=20261012" defer></script>
+  <script src="/assets/feedback.js?v=20261012b" defer></script>
+</body>
+</html>
