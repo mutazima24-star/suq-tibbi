@@ -1,13 +1,17 @@
-# سوق طبي — concept review
+# سوق طبي — marketplace demo
 
-Arabic RTL concept presentation with a local, interactive marketplace preview. Examples, prices, donations, and jobs are illustrative; no trading or applications occur.
+`index.html` is an Arabic RTL classified-ads marketplace demo (mobile, tablet and desktop) for medical devices, supplies, clinics, jobs, services and donations. Its layout follows the familiar Saudi classifieds pattern: category tabs, sub-category chips, city and sort filters, a list feed, ad pages with replies, posting, favorites, messages and an account page.
+
+All listings, users and prices are fictional demo data (`assets/data.js`); product images are original SVG illustrations (`assets/illustrations.js`). Logins, posts, replies, favorites and chats are stored only in the visitor's browser (`localStorage`). No real trading, calls or messages occur.
+
+The earlier concept presentation and its feedback form now live at `/concept.html`.
 
 ## Development and checks
 
 Static HTML/CSS/JavaScript plus a Vercel Node function. No frontend build is needed.
 
 - `node --test tests/feedback.test.cjs`: mocked delivery/storage tests; no real submissions or notifications.
-- `node --check assets/app.js`
+- `node --check assets/app.js assets/market.js assets/data.js assets/illustrations.js`
 - Vercel serves `index.html`, `assets/`, and `api/feedback.js` using `vercel.json`.
 
 ## Feedback configuration

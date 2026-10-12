@@ -6,6 +6,10 @@
       "use": "@vercel/static"
     },
     {
+      "src": "concept.html",
+      "use": "@vercel/static"
+    },
+    {
       "src": "assets/**",
       "use": "@vercel/static"
     },
