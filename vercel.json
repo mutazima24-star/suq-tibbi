@@ -6,6 +6,10 @@
       "use": "@vercel/static"
     },
     {
+      "src": "market.html",
+      "use": "@vercel/static"
+    },
+    {
       "src": "concept.html",
       "use": "@vercel/static"
     },
@@ -32,7 +36,15 @@
       "dest": "/api/feedback.js"
     },
     {
+      "src": "/api/market-feedback",
+      "dest": "/api/market-feedback.js"
+    },
+    {
       "handle": "filesystem"
+    },
+    {
+      "src": "/market/?",
+      "dest": "/market.html"
     },
     {
       "src": "/",
