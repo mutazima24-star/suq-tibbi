@@ -35,3 +35,10 @@ At the start of this review, production was deployed through CLI and contained u
 The desktop navigation selector had higher CSS specificity than the mobile hiding rule. Mobile rules now target `.topbar .nav` explicitly. Flex items that must remain visible do not shrink and grid children can shrink to their available width.
 
 The browser sends standard `name`/`message` fields and checks both HTTP status and FormSubmit JSON success. Failed or ambiguous responses retain the draft; no timed success or automatic retries are used. Provider acceptance and inbox delivery must be verified separately.
+
+## Visit measurement
+
+- `assets/track.js` + `api/track.js` record one row per browser session in Respark OS (`public.demo_visits`, licence `demo_visits` for SUQ_TIBBI): visible time, pages, ads opened, how the visitor entered (after the countdown, by skipping it, or straight to /market), approximate country/city from Vercel geo headers, device/OS/browser, referrer, UTM and feedback sent. No cookies, names or full IPs.
+- Private investor links: add `?v=<slug>` (letters, digits, `-`, `_`), e.g. `https://souq-tibbi.respark-os.com/?v=abdullah`. The slug sticks to that browser.
+- Sessions are viewed in the Respark console (os.respark-os.com/dashboard, client page, «زيارات النسخة التجريبية»).
+- The Vercel Web Analytics script (`/_vercel/insights/script.js`) gives general counts once Analytics is enabled on the project.

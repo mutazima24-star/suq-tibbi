@@ -40,6 +40,10 @@
       "dest": "/api/market-feedback.js"
     },
     {
+      "src": "/api/track",
+      "dest": "/api/track.js"
+    },
+    {
       "handle": "filesystem"
     },
     {

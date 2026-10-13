@@ -199,6 +199,7 @@
     btn.disabled = true; btn.textContent = "جارٍ الإرسال…"; status.textContent = "";
 
     const id = await saveRequest(d);
+    if (id && window.stTrack) window.stTrack.feedback();
     const mailed = await sendEmail(d, typeof id === "number" ? id : null);
     if (!id && !mailed) {
       btn.disabled = false; btn.textContent = "اعتماد وإرسال";
