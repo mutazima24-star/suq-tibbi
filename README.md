@@ -38,7 +38,7 @@ The browser sends standard `name`/`message` fields and checks both HTTP status a
 
 ## Visit measurement
 
-- `assets/track.js` + `api/track.js` record one row per browser session in Respark OS (`public.demo_visits`, licence `demo_visits` for SUQ_TIBBI): visible time, pages, ads opened, how the visitor entered (after the countdown, by skipping it, or straight to /market), approximate country/city from Vercel geo headers, device/OS/browser, referrer, UTM and feedback sent. No cookies, names or full IPs.
+- `assets/track.js` + `api/track.js` record one row per browser session in Respark OS (`public.demo_visits`, licence `demo_visits` for SUQ_TIBBI): visible time, pages, ads opened, how the visitor entered (after the countdown, by skipping it, or straight to /market), approximate country/city from Vercel geo headers, device/OS/browser, referrer, UTM and feedback sent. No cookies, names or full IPs (IP truncated, city-level place); a persistent browser id links repeat visits, and an invite slug identifies who the link was sent to.
 - Private investor links: add `?v=<slug>` (letters, digits, `-`, `_`), e.g. `https://souq-tibbi.respark-os.com/?v=abdullah`. The slug sticks to that browser.
 - Sessions are viewed in the Respark console (os.respark-os.com/dashboard, client page, «زيارات النسخة التجريبية»).
 - The Vercel Web Analytics script (`/_vercel/insights/script.js`) gives general counts once Analytics is enabled on the project.
