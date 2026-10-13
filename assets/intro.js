@@ -118,8 +118,9 @@
     requestAnimationFrame(frame);
   }
 
-  function leave() {
+  function leave(how) {
     if (leaving) return;
+    if (window.stTrack) window.stTrack.entry(how === "click" ? "intro_click" : "intro_auto");
     leaving = true;
     try { sessionStorage.setItem("st-enter", "1"); } catch {}
     if (reduce) { location.href = TARGET; return; }
@@ -139,7 +140,7 @@
   go.addEventListener("click", (e) => {
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
     e.preventDefault();
-    leave();
+    leave("click");
   });
   addEventListener("pageshow", (e) => {
     if (!e.persisted) return;

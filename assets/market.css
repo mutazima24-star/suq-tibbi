@@ -296,6 +296,7 @@ textarea.input { height: auto; padding: 10px 12px; resize: vertical; min-height:
 .ftr-brand p { grid-column: 1 / -1; margin: 6px 0 0; color: var(--muted); font-size: 13.5px; max-width: 420px; }
 .ftr-links { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 14px; color: var(--ink-2); }
 .ftr-links a:hover { color: var(--brand); }
+.ftr-note { grid-column: 1 / -1; color: var(--muted); font-size: 11.5px; line-height: 1.85; margin: 4px 0 0; }
 .ftr-copy { grid-column: 1 / -1; color: var(--muted); font-size: 12.5px; margin: 6px 0 0; }
 
 /* Bottom nav (mobile) */
