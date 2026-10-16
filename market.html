@@ -4,40 +4,42 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="description" content="سوق طبي — أكبر سوق إعلانات مبوبة للأجهزة والمستلزمات الطبية والعيادات والوظائف الصحية في السعودية.">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="#0b1f44">
   <title>سوق طبي | إعلانات الأجهزة والمستلزمات الطبية</title>
   <link rel="icon" href="/assets/logo.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/market.css?v=20261013">
+  <link rel="stylesheet" href="/assets/haraj.css?v=20261016">
   <link rel="stylesheet" href="/assets/feedback.css?v=20261012b">
-  <script>try { const t = localStorage.getItem('st-theme'); if (t) document.documentElement.dataset.theme = t; if (sessionStorage.getItem('st-enter')) { sessionStorage.removeItem('st-enter'); document.documentElement.classList.add('st-enter'); } } catch {}</script>
+  <script>try { if (JSON.parse(localStorage.getItem('st-lang') || '"ar"') === 'en') { document.documentElement.lang = 'en'; document.documentElement.dir = 'ltr'; } const t = localStorage.getItem('st-theme'); if (t) document.documentElement.dataset.theme = t; if (sessionStorage.getItem('st-enter')) { sessionStorage.removeItem('st-enter'); document.documentElement.classList.add('st-enter'); } } catch {}</script>
 </head>
 <body>
-  <a class="skip-link" href="#app">تجاوز إلى المحتوى</a>
+  <a class="skip-link" href="#app" data-en="Skip to content">تجاوز إلى المحتوى</a>
   <div class="demo-strip" id="demo-strip">
-    <span>نسخة عرض تجريبية — جميع الإعلانات والأسعار والحسابات أمثلة توضيحية.</span>
+    <span data-en="Demo version: every listing, price and account here is an illustrative example.">نسخة عرض تجريبية — جميع الإعلانات والأسعار والحسابات أمثلة توضيحية.</span>
     <button type="button" aria-label="إخفاء التنبيه" data-action="hide-strip">✕</button>
   </div>
 
   <header class="hdr">
     <div class="wrap hdr-in">
-      <a class="logo" href="#/" aria-label="سوق طبي — الرئيسية">
-        <img src="/assets/logo.svg" width="36" height="36" alt="">
-        <span>سوق طبي</span>
+      <a class="logo" href="#/" aria-label="سوق طبي.كوم — الرئيسية" data-en-aria="SouqTibbi.com — home">
+        <img class="logo-ar" src="/assets/brand/souq-tibbi-ar.png" width="169" height="30" alt="سوق طبي.كوم">
+        <img class="logo-en" src="/assets/brand/souq-tibbi-en.png" width="116" height="30" alt="SouqTibbi.com">
       </a>
       <form class="search" id="search-form" role="search">
         <svg class="i" aria-hidden="true"><use href="#i-search"/></svg>
-        <input id="q" type="search" placeholder="ابحث في سوق طبي" autocomplete="off" aria-label="ابحث في الإعلانات">
-        <button type="submit" class="search-go">بحث</button>
+        <input id="q" type="search" placeholder="ابحث عن جهاز أو مستلزم .." data-en-ph="Search for a device or supply .." autocomplete="off" aria-label="ابحث في الإعلانات">
+        <button type="submit" class="search-go" data-en="Search">بحث</button>
       </form>
+      <button type="button" class="lang-btn" data-action="lang" aria-label="English" data-en-aria="العربية"><span class="lang-flag" aria-hidden="true"></span><b>EN</b></button>
       <div class="hdr-actions">
-        <button type="button" class="icon-btn" data-action="theme" aria-label="الوضع الليلي"><svg class="i"><use href="#i-moon"/></svg></button>
-        <a class="icon-btn hide-sm" href="#/messages" aria-label="الرسائل"><svg class="i"><use href="#i-chat"/></svg><b class="dot" id="msg-dot" hidden></b></a>
-        <button type="button" class="icon-btn hide-sm" data-action="notifs" aria-label="التنبيهات"><svg class="i"><use href="#i-bell"/></svg><b class="dot">3</b></button>
-        <a class="btn-add hide-sm" href="#/new"><svg class="i"><use href="#i-plus"/></svg>أضف إعلان</a>
-        <button type="button" class="btn-login" id="login-btn" data-action="account">دخول</button>
+        <button type="button" class="icon-btn hide-sm" data-action="theme" aria-label="الوضع الليلي" data-en-aria="Dark mode"><svg class="i"><use href="#i-moon"/></svg></button>
+        <a class="icon-btn hide-sm" href="#/messages" aria-label="الرسائل" data-en-aria="Messages"><svg class="i"><use href="#i-chat"/></svg><b class="dot" id="msg-dot" hidden></b></a>
+        <a class="icon-btn hide-sm" href="#/notifs" aria-label="الإشعارات" data-en-aria="Notifications"><svg class="i"><use href="#i-bell"/></svg><b class="dot">3</b></a>
+        <a class="btn-add hide-sm" href="#/new"><svg class="i"><use href="#i-plus"/></svg><span data-en="Add listing">أضف عرض</span></a>
+        <button type="button" class="btn-login" id="login-btn" data-action="account" aria-label="حسابي" data-en-aria="My account"></button>
       </div>
     </div>
   </header>
@@ -46,21 +48,21 @@
 
   <footer class="ftr">
     <div class="wrap ftr-in">
-      <div class="ftr-brand"><img src="/assets/logo.svg" width="28" height="28" alt=""> <b>سوق طبي</b><p>سوق إعلانات مبوبة متخصص في القطاع الصحي: أجهزة، مستلزمات، عيادات، وظائف، وتبرعات.</p></div>
+      <div class="ftr-brand"><span class="ftr-logo"><img class="logo-ar" src="/assets/brand/souq-tibbi-ar.png" width="135" height="24" alt="سوق طبي.كوم"><img class="logo-en" src="/assets/brand/souq-tibbi-en.png" width="93" height="24" alt="SouqTibbi.com"></span><p data-en="A classifieds market for healthcare: devices, supplies, clinics, jobs and donations.">سوق إعلانات مبوبة متخصص في القطاع الصحي: أجهزة، مستلزمات، عيادات، وظائف، وتبرعات.</p></div>
       <nav class="ftr-links" aria-label="روابط">
-        <a href="#/">الرئيسية</a><a href="#/new">أضف إعلان</a><a href="#/favorites">المفضلة</a><a href="#/about">عن سوق طبي</a><a href="#/about">شروط الاستخدام</a><a href="/">عن المشروع</a><a href="/concept.html">التصور المبدئي</a>
+        <a href="#/" data-en="Home">الرئيسية</a><a href="#/cats" data-en="All sections">كل الأقسام</a><a href="#/new" data-en="Add listing">أضف عرض</a><a href="#/favorites" data-en="Favourites">المفضلة</a><a href="#/about" data-en="About">عن سوق طبي</a><a href="#/about" data-en="Terms">شروط الاستخدام</a><a href="/" data-en="The project">عن المشروع</a><a href="/concept.html" data-en="Concept">التصور المبدئي</a>
       </nav>
-      <p class="ftr-note">نقيس الزيارات لتحسين هذه النسخة التجريبية: مدة الزيارة والصفحات والمدينة التقريبية ونوع الجهاز، دون أسماء أو عناوين IP كاملة أو ملفات تعريف إعلانية.</p>
-      <p class="ftr-copy">© 2026 سوق طبي · نسخة عرض تجريبية من <a href="/">ريسبارك للحلول الرقمية</a></p>
+      <p class="ftr-note" data-en="We measure visits to improve this demo: visit length, pages, approximate city and device type, without names, full IP addresses or ad profiles.">نقيس الزيارات لتحسين هذه النسخة التجريبية: مدة الزيارة والصفحات والمدينة التقريبية ونوع الجهاز، دون أسماء أو عناوين IP كاملة أو ملفات تعريف إعلانية.</p>
+      <p class="ftr-copy" data-en="© 2026 SouqTibbi.com · a demo by &lt;a href=&quot;/&quot;&gt;Respark Digital Solutions&lt;/a&gt;">© 2026 سوق طبي.كوم · نسخة عرض تجريبية من <a href="/">ريسبارك للحلول الرقمية</a></p>
     </div>
   </footer>
 
-  <nav class="bnav" aria-label="التنقل السفلي">
-    <a href="#/" data-tab="home"><svg class="i"><use href="#i-home"/></svg><span>الرئيسية</span></a>
-    <a href="#/messages" data-tab="messages"><svg class="i"><use href="#i-chat"/></svg><span>الرسائل</span></a>
-    <a href="#/new" class="bnav-add" data-tab="new" aria-label="أضف إعلان"><svg class="i"><use href="#i-plus"/></svg></a>
-    <a href="#/favorites" data-tab="favorites"><svg class="i"><use href="#i-heart"/></svg><span>المفضلة</span></a>
-    <a href="#/account" data-tab="account"><svg class="i"><use href="#i-user"/></svg><span>حسابي</span></a>
+  <nav class="bnav" aria-label="التنقل السفلي" data-en-aria="Bottom navigation">
+    <a href="#/" data-tab="home"><svg class="i"><use href="#i-home-f"/></svg><span data-en="Home">الرئيسية</span></a>
+    <a href="#/cats" data-tab="cats"><svg class="i"><use href="#i-grid"/></svg><span data-en="All sections">كل الأقسام</span></a>
+    <a href="#/new" class="bnav-add" data-tab="new"><svg class="i"><use href="#i-plus"/></svg><span data-en="Add listing">أضف عرض</span></a>
+    <a href="#/notifs" data-tab="notifs"><svg class="i"><use href="#i-bell-f"/></svg><span data-en="Alerts">الإشعارات</span><b class="dot">3</b></a>
+    <a href="#/messages" data-tab="messages"><svg class="i"><use href="#i-mail-f"/></svg><span data-en="Messages">الرسائل</span></a>
   </nav>
 
   <dialog id="dlg" class="dlg" aria-labelledby="dlg-title"><div class="dlg-card" id="dlg-body"></div></dialog>
@@ -97,11 +99,30 @@
     <symbol id="c-badge" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="11" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8.5 17a4 4 0 0 1 7 0" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
     <symbol id="c-wrench" viewBox="0 0 24 24"><path d="M14 6a4 4 0 0 0 5 5l-9 9a2 2 0 0 1-3-3l9-9a4 4 0 0 0-2-2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
     <symbol id="c-heart" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <!-- category tiles: duotone illustrations (64×64) -->
+    <symbol id="ci-home" viewBox="0 0 64 64"><path d="M12 30 32 13l20 17v20a3 3 0 0 1-3 3H15a3 3 0 0 1-3-3z" fill="#2f6fd6"/><path d="M8 31 32 10l24 21" fill="none" stroke="#0b1f44" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><rect x="26" y="35" width="12" height="18" rx="2" fill="#ffd400"/><path d="M30 41h4M32 39v4" stroke="#0b1f44" stroke-width="2.4" stroke-linecap="round"/></symbol>
+    <symbol id="ci-devices" viewBox="0 0 64 64"><rect x="7" y="12" width="44" height="31" rx="4" fill="#0b1f44"/><rect x="11" y="16" width="36" height="23" rx="2" fill="#9cc3f5"/><path d="M14 28h7l3-7 5 13 3-6h12" fill="none" stroke="#e5484d" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 43v6h10v-6" fill="#2f6fd6"/><rect x="18" y="49" width="22" height="4" rx="2" fill="#0b1f44"/><rect x="45" y="30" width="13" height="22" rx="3" fill="#2f6fd6"/><rect x="48" y="34" width="7" height="9" rx="1" fill="#dbe9fd"/></symbol>
+    <symbol id="ci-homecare" viewBox="0 0 64 64"><circle cx="27" cy="42" r="14" fill="none" stroke="#0b1f44" stroke-width="4"/><circle cx="27" cy="42" r="4" fill="#0b1f44"/><path d="M18 10v20h20l6 16h8" fill="none" stroke="#2f6fd6" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><rect x="20" y="24" width="20" height="8" rx="3" fill="#2f6fd6"/><circle cx="50" cy="52" r="4" fill="#ffd400"/></symbol>
+    <symbol id="ci-dental" viewBox="0 0 64 64"><path d="M20 9c-8 0-11 7-9 15 2 6 3 13 5 22 1.5 7 7 7 8-1l2-10h12l2 10c1 8 6.5 8 8 1 2-9 3-16 5-22 2-8-1-15-9-15-5 0-7 3-12 3s-7-3-12-3z" fill="#fff" stroke="#2f6fd6" stroke-width="4" stroke-linejoin="round"/><path d="M22 18c2-2 5-2 7 0" fill="none" stroke="#9cc3f5" stroke-width="3" stroke-linecap="round"/><path d="M48 6l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#ffd400"/></symbol>
+    <symbol id="ci-beauty" viewBox="0 0 64 64"><rect x="8" y="30" width="26" height="24" rx="4" fill="#0b1f44"/><rect x="12" y="34" width="18" height="9" rx="2" fill="#9cc3f5"/><circle cx="21" cy="48" r="2.5" fill="#ffd400"/><path d="M34 40c8 0 10-6 14-12" fill="none" stroke="#2f6fd6" stroke-width="4" stroke-linecap="round"/><rect x="43" y="14" width="10" height="18" rx="3" transform="rotate(30 48 23)" fill="#2f6fd6"/><path d="M54 6v6M60 10l-5 3M58 18h-5" stroke="#e5484d" stroke-width="2.6" stroke-linecap="round"/></symbol>
+    <symbol id="ci-supplies" viewBox="0 0 64 64"><path d="M8 22 32 10l24 12v24L32 58 8 46z" fill="#9cc3f5"/><path d="M8 22l24 12 24-12M32 34v24" fill="none" stroke="#2f6fd6" stroke-width="3.5" stroke-linejoin="round"/><path d="M8 22 32 10l24 12v24L32 58 8 46z" fill="none" stroke="#0b1f44" stroke-width="3.5" stroke-linejoin="round"/><rect x="38" y="36" width="12" height="12" rx="2" fill="#fff"/><path d="M44 38.5v7M40.5 42h7" stroke="#e5484d" stroke-width="2.8" stroke-linecap="round"/></symbol>
+    <symbol id="ci-clinics" viewBox="0 0 64 64"><rect x="12" y="16" width="40" height="40" rx="3" fill="#2f6fd6"/><rect x="8" y="12" width="48" height="7" rx="2" fill="#0b1f44"/><rect x="27" y="42" width="10" height="14" fill="#0b1f44"/><rect x="17" y="25" width="8" height="7" rx="1" fill="#dbe9fd"/><rect x="39" y="25" width="8" height="7" rx="1" fill="#dbe9fd"/><circle cx="32" cy="31" r="7" fill="#fff"/><path d="M32 27v8M28 31h8" stroke="#e5484d" stroke-width="2.8" stroke-linecap="round"/></symbol>
+    <symbol id="ci-jobs" viewBox="0 0 64 64"><rect x="8" y="20" width="40" height="30" rx="4" fill="#2f6fd6"/><path d="M20 20v-5a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v5" fill="none" stroke="#0b1f44" stroke-width="4"/><rect x="8" y="30" width="40" height="4" fill="#0b1f44"/><circle cx="47" cy="44" r="10" fill="#fff" stroke="#0b1f44" stroke-width="4"/><path d="M54 51l6 6" stroke="#0b1f44" stroke-width="5" stroke-linecap="round"/><circle cx="47" cy="44" r="4" fill="#ffd400"/></symbol>
+    <symbol id="ci-services" viewBox="0 0 64 64"><circle cx="24" cy="26" r="13" fill="#9cc3f5"/><circle cx="24" cy="26" r="13" fill="none" stroke="#2f6fd6" stroke-width="5" stroke-dasharray="6 4"/><circle cx="24" cy="26" r="5" fill="#0b1f44"/><path d="M44 30a8 8 0 0 0 10 10L38 56a4 4 0 0 1-6-6l16-16a8 8 0 0 0-4-4z" fill="#0b1f44"/><circle cx="51" cy="13" r="5" fill="#ffd400"/></symbol>
+    <symbol id="ci-donate" viewBox="0 0 64 64"><path d="M32 30s-14-8-14-18a8 8 0 0 1 14-5 8 8 0 0 1 14 5c0 10-14 18-14 18z" fill="#e5484d"/><path d="M6 44h10l8-4h12a4 4 0 0 1 0 8H26" fill="none" stroke="#0b1f44" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 56h22l18-12a4 4 0 0 0-5-6l-11 7" fill="#2f6fd6"/><rect x="2" y="40" width="8" height="18" rx="2" fill="#0b1f44"/></symbol>
+    <symbol id="ci-all" viewBox="0 0 64 64"><rect x="8" y="8" width="21" height="21" rx="5" fill="#2f6fd6"/><rect x="35" y="8" width="21" height="21" rx="5" fill="#9cc3f5"/><rect x="8" y="35" width="21" height="21" rx="5" fill="#9cc3f5"/><circle cx="45" cy="45" r="9" fill="none" stroke="#0b1f44" stroke-width="4"/><path d="M52 52l5 5" stroke="#0b1f44" stroke-width="4" stroke-linecap="round"/></symbol>
+    <symbol id="i-ksa" viewBox="0 0 24 24"><path d="M3 9l4-4 4 1 3-2 3 3 2 0 2 4-1 3-3 2-1 3-4 2-4-2-1-4-3-2z" fill="currentColor"/></symbol>
+    <symbol id="i-nav" viewBox="0 0 24 24"><path d="M20 4 4 11l7 2 2 7z" fill="currentColor"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2" fill="currentColor"/><rect x="13" y="3" width="8" height="8" rx="2" fill="currentColor" opacity=".55"/><rect x="3" y="13" width="8" height="8" rx="2" fill="currentColor" opacity=".55"/><circle cx="16.5" cy="16.5" r="3.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="m19 19 2.5 2.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-home-f" viewBox="0 0 24 24"><path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" fill="currentColor"/></symbol>
+    <symbol id="i-bell-f" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z" fill="currentColor"/><path d="M10 21h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-mail-f" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" fill="currentColor"/><path d="m4 7 8 6 8-6" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+    <symbol id="i-user-f" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="3.6" fill="currentColor"/><path d="M5.8 18.6a7.4 7.4 0 0 1 12.4 0z" fill="currentColor"/></symbol>
   </svg>
 
   <script src="/assets/illustrations.js?v=20261012" defer></script>
-  <script src="/assets/data.js?v=20261012" defer></script>
-  <script src="/assets/market.js?v=20261012" defer></script>
+  <script src="/assets/data.js?v=20261016" defer></script>
+  <script src="/assets/market.js?v=20261016" defer></script>
   <script src="/assets/feedback.js?v=20261013" defer></script>
   <script src="/assets/track.js?v=20261013" defer></script>
   <script defer src="/_vercel/insights/script.js"></script>
