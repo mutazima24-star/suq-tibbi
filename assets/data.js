@@ -2,15 +2,15 @@
 // Demo marketplace data. All listings, users and prices are fictional and for presentation only.
 window.MARKET = (function () {
   const categories = [
-    { id: 'devices', name: 'أجهزة طبية', icon: 'pulse', subs: ['أجهزة مراقبة المرضى', 'أشعة وتصوير', 'أجهزة تنفس وأكسجين', 'أجهزة مختبر', 'أجهزة قياس منزلية'] },
-    { id: 'homecare', name: 'رعاية منزلية', icon: 'wheelchair', subs: ['كراسي متحركة', 'أسرة طبية', 'مشايات وعكازات', 'مستلزمات كبار السن'] },
-    { id: 'dental', name: 'معدات الأسنان', icon: 'tooth', subs: ['كراسي أسنان', 'أجهزة تعقيم', 'أدوات ومستهلكات'] },
-    { id: 'beauty', name: 'أجهزة تجميل وليزر', icon: 'spark', subs: ['ليزر إزالة الشعر', 'أجهزة البشرة', 'أجهزة نحت القوام'] },
-    { id: 'supplies', name: 'مستلزمات طبية', icon: 'box', subs: ['قفازات وكمامات', 'حقن ومحاليل', 'ملابس طبية', 'أدوات تشخيص'] },
-    { id: 'clinics', name: 'عيادات للتقبيل', icon: 'building', subs: ['تقبيل عيادات', 'تأجير غرف طبية', 'مجمعات طبية'] },
-    { id: 'jobs', name: 'وظائف طبية', icon: 'badge', subs: ['أطباء', 'تمريض', 'فنيين', 'إداريين'] },
-    { id: 'services', name: 'خدمات طبية', icon: 'wrench', subs: ['صيانة أجهزة', 'تعقيم ونظافة', 'نقل مرضى', 'تدريب وشهادات'] },
-    { id: 'donate', name: 'تبرعات', icon: 'heart', subs: ['أجهزة للتبرع', 'مستلزمات للتبرع'] }
+    { id: 'devices', en: 'Medical devices', name: 'أجهزة طبية', icon: 'pulse', subs: ['أجهزة مراقبة المرضى', 'أشعة وتصوير', 'أجهزة تنفس وأكسجين', 'أجهزة مختبر', 'أجهزة قياس منزلية'] },
+    { id: 'homecare', en: 'Home care', name: 'رعاية منزلية', icon: 'wheelchair', subs: ['كراسي متحركة', 'أسرة طبية', 'مشايات وعكازات', 'مستلزمات كبار السن'] },
+    { id: 'dental', en: 'Dental equipment', name: 'معدات الأسنان', icon: 'tooth', subs: ['كراسي أسنان', 'أجهزة تعقيم', 'أدوات ومستهلكات'] },
+    { id: 'beauty', en: 'Beauty & laser', name: 'أجهزة تجميل وليزر', icon: 'spark', subs: ['ليزر إزالة الشعر', 'أجهزة البشرة', 'أجهزة نحت القوام'] },
+    { id: 'supplies', en: 'Medical supplies', name: 'مستلزمات طبية', icon: 'box', subs: ['قفازات وكمامات', 'حقن ومحاليل', 'ملابس طبية', 'أدوات تشخيص'] },
+    { id: 'clinics', en: 'Clinics for sale', name: 'عيادات للتقبيل', icon: 'building', subs: ['تقبيل عيادات', 'تأجير غرف طبية', 'مجمعات طبية'] },
+    { id: 'jobs', en: 'Medical jobs', name: 'وظائف طبية', icon: 'badge', subs: ['أطباء', 'تمريض', 'فنيين', 'إداريين'] },
+    { id: 'services', en: 'Medical services', name: 'خدمات طبية', icon: 'wrench', subs: ['صيانة أجهزة', 'تعقيم ونظافة', 'نقل مرضى', 'تدريب وشهادات'] },
+    { id: 'donate', en: 'Donations', name: 'تبرعات', icon: 'heart', subs: ['أجهزة للتبرع', 'مستلزمات للتبرع'] }
   ];
   const cities = ['الرياض', 'جدة', 'مكة', 'المدينة', 'الدمام', 'الخبر', 'الأحساء', 'الطائف', 'القصيم', 'أبها', 'تبوك', 'حائل', 'جازان', 'نجران', 'ينبع'];
 
@@ -106,5 +106,8 @@ window.MARKET = (function () {
     };
   });
 
-  return { categories, cities, users, ads };
+  const citiesEn = { 'الرياض': 'Riyadh', 'جدة': 'Jeddah', 'مكة': 'Makkah', 'المدينة': 'Madinah', 'الدمام': 'Dammam', 'الخبر': 'Khobar', 'الأحساء': 'Al-Ahsa', 'الطائف': 'Taif', 'القصيم': 'Qassim', 'أبها': 'Abha', 'تبوك': 'Tabuk', 'حائل': 'Hail', 'جازان': 'Jazan', 'نجران': 'Najran', 'ينبع': 'Yanbu' };
+  // approximate city centres (lat, lng) for «القريب» sorting
+  const cityGeo = { 'الرياض': [24.71, 46.68], 'جدة': [21.54, 39.17], 'مكة': [21.39, 39.86], 'المدينة': [24.47, 39.61], 'الدمام': [26.43, 50.10], 'الخبر': [26.28, 50.21], 'الأحساء': [25.38, 49.59], 'الطائف': [21.27, 40.42], 'القصيم': [26.33, 43.97], 'أبها': [18.22, 42.51], 'تبوك': [28.38, 36.57], 'حائل': [27.52, 41.69], 'جازان': [16.89, 42.55], 'نجران': [17.49, 44.13], 'ينبع': [24.09, 38.06] };
+  return { categories, cities, citiesEn, cityGeo, users, ads };
 })();

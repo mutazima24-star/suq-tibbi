@@ -1,6 +1,6 @@
 'use strict';
 (function () {
-  const { categories, cities, users, ads: seedAds } = window.MARKET;
+  const { categories, cities, citiesEn = {}, cityGeo = {}, users, ads: seedAds } = window.MARKET;
   const app = document.getElementById('app');
   const PAGE = 12;
 
@@ -15,6 +15,12 @@
   let extraComments = store.get('comments', {});
   let chats = store.get('chats', null);
   const loadedAt = Date.now();
+  let lang = store.get('lang', 'ar') === 'en' ? 'en' : 'ar';
+  const EN = () => lang === 'en';
+  let useEn = EN(); // false while a listing page (Arabic content) is drawn inside the English shell
+  const T = (ar, en) => (useEn ? en : ar);
+  const catName = c => (c ? T(c.name, c.en || c.name) : '');
+  const cityName = c => T(c, citiesEn[c] || c);
 
   function allAds() { return [...myAds, ...seedAds]; }
   function findAd(id) { return allAds().find(a => String(a.id) === String(id)); }
@@ -26,6 +32,12 @@
   const fmt = n => Number(n).toLocaleString('en-US');
   function minutesOf(ad) { return ad.createdAt ? Math.max(1, Math.round((Date.now() - ad.createdAt) / 60000)) : ad.minutes + Math.round((Date.now() - loadedAt) / 60000); }
   function ago(m) {
+    if (EN()) {
+      if (m < 1) return 'just now';
+      if (m < 60) return `${m} min ago`;
+      const h = Math.floor(m / 60); if (h < 24) return `${h} h ago`;
+      const d = Math.floor(h / 24); return d < 30 ? (d === 1 ? 'a day ago' : `${d} days ago`) : 'a month ago';
+    }
     if (m < 1) return 'الآن';
     if (m < 60) return m === 1 ? 'قبل دقيقة' : m === 2 ? 'قبل دقيقتين' : m <= 10 ? `قبل ${m} دقائق` : `قبل ${m} دقيقة`;
     const h = Math.floor(m / 60);
@@ -35,14 +47,14 @@
     return 'قبل شهر';
   }
   function priceHtml(ad, cls = 'price') {
-    if (ad.cat === 'donate' || ad.price === 0) return `<span class="${cls} free">مجاناً · تبرع</span>`;
-    if (ad.price == null) return `<span class="${cls} ask">${ad.cat === 'jobs' ? 'الراتب حسب الخبرة' : 'السعر عند التواصل'}</span>`;
-    return `<span class="${cls}">${fmt(ad.price)} ريال</span>`;
+    if (ad.cat === 'donate' || ad.price === 0) return `<span class="${cls} free">${T('مجاناً · تبرع', 'Free · donation')}</span>`;
+    if (ad.price == null) return `<span class="${cls} ask">${ad.cat === 'jobs' ? T('الراتب حسب الخبرة', 'Salary by experience') : T('السعر عند التواصل', 'Price on request')}</span>`;
+    return `<span class="${cls}">${fmt(ad.price)} ${T('ريال', 'SAR')}</span>`;
   }
   function imgSrc(img) { return typeof img === 'string' ? img : window.illo(img[0], img[1], img[2]); }
   const initial = name => esc(String(name).replace(/^(د\.|أبو|أم)\s*/, '').trim().charAt(0) || '؟');
   function userInfo(name) { return users[name] || { joined: 2026, rating: 5, reviews: 0 }; }
-  const verifiedMark = name => userInfo(name).verified ? `<svg class="i verified" aria-label="حساب موثق"><use href="#i-check"/></svg>` : '';
+  const verifiedMark = name => userInfo(name).verified ? `<svg class="i verified" aria-label="${T('حساب موثق', 'Verified account')}"><use href="#i-check"/></svg>` : '';
 
   function toast(msg) {
     const t = document.getElementById('toast');
@@ -74,7 +86,11 @@
   function render() {
     const { parts, params } = parseHash();
     const [route, arg] = parts;
-    document.querySelectorAll('.bnav a').forEach(a => a.classList.toggle('on', a.dataset.tab === (route || 'home') || (route === 'user' && a.dataset.tab === 'account' && me && arg === me.name)));
+    document.querySelectorAll('.bnav a').forEach(a => a.classList.toggle('on', a.dataset.tab === (route || 'home')));
+    // English chrome: the home, sections and notifications screens are translated; listing pages keep their Arabic content and direction.
+    const translated = !route || ['cats', 'notifs'].includes(route);
+    useEn = EN() && translated;
+    if (EN() && !translated) { app.setAttribute('dir', 'rtl'); app.setAttribute('lang', 'ar'); } else { app.removeAttribute('dir'); app.removeAttribute('lang'); }
     updateLoginBtn();
     if (route !== undefined && route !== '') document.getElementById('q').value = '';
     switch (route) {
@@ -85,6 +101,8 @@
       case 'messages': return viewMessages(arg);
       case 'account': return viewAccount();
       case 'about': return viewAbout();
+      case 'cats': return viewCats();
+      case 'notifs': return viewNotifs();
       default: return viewHome(params);
     }
   }
@@ -109,33 +127,68 @@
     );
     if (f.sort === 'low') list.sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity));
     else if (f.sort === 'high') list.sort((a, b) => (b.price ?? -1) - (a.price ?? -1));
+    else if (f.sort === 'near') { const at = here || cityGeo['الرياض']; list.sort((a, b) => (km(at, cityGeo[a.city]) - km(at, cityGeo[b.city])) || (minutesOf(a) - minutesOf(b))); }
     else list.sort((a, b) => (f.q || f.cat ? 0 : (b.pinned - a.pinned)) || (minutesOf(a) - minutesOf(b)));
     return list;
   }
   function postHtml(ad) {
-    const cat = catOf(ad.cat);
     const fav = favs.has(String(ad.id));
-    const isNew = minutesOf(ad) < 60;
     const replies = ad.comments.length + (extraComments[ad.id] || []).length;
+    const n = ad.images.length;
     return `<article class="post">
       <div class="post-body">
-        <h2 class="post-title"><a href="#/ad/${ad.id}">${esc(ad.title)}</a></h2>
+        <h2 class="post-title" dir="rtl" lang="ar"><a href="#/ad/${ad.id}">${esc(ad.title)}</a></h2>
         <div class="meta">
-          <span>${icon('i-pin')}${esc(ad.city)}</span>
+          <span>${icon('i-pin')}${esc(cityName(ad.city))}</span>
           <span>${icon('i-clock')}${ago(minutesOf(ad))}</span>
-          <a class="user-link" href="#/user/${encodeURIComponent(ad.user)}"><span>${icon('i-user')}${esc(ad.user)} ${verifiedMark(ad.user)}</span></a>
-          ${replies ? `<span>${icon('i-chat')}${replies} ردود</span>` : ''}
+          ${replies ? `<span>${icon('i-chat')}${replies}</span>` : ''}
         </div>
+        <a class="seller" href="#/user/${encodeURIComponent(ad.user)}"><span class="av">${initial(ad.user)}</span><span class="seller-n" dir="rtl" lang="ar">${esc(ad.user)}</span>${verifiedMark(ad.user)}</a>
         <div class="post-foot">
           ${priceHtml(ad)}
-          ${ad.pinned ? '<span class="tag pin">مميز</span>' : ''}
-          ${isNew ? '<span class="tag new">جديد</span>' : ''}
-          <span class="tag">${esc(cat ? cat.name : '')}</span>
-          <button type="button" class="fav-btn ${fav ? 'on' : ''}" data-fav="${ad.id}" aria-pressed="${fav}" aria-label="${fav ? 'إزالة من المفضلة' : 'إضافة إلى المفضلة'}">${icon(fav ? 'i-heart-f' : 'i-heart')}</button>
+          ${ad.pinned ? `<span class="tag pin">${T('مميز', 'Featured')}</span>` : ''}
+          <button type="button" class="fav-btn ${fav ? 'on' : ''}" data-fav="${ad.id}" aria-pressed="${fav}" aria-label="${fav ? T('إزالة من المفضلة', 'Remove from favourites') : T('إضافة إلى المفضلة', 'Add to favourites')}">${icon(fav ? 'i-heart-f' : 'i-heart')}</button>
         </div>
       </div>
-      <div class="post-thumb"><img src="${imgSrc(ad.images[0])}" alt="" loading="lazy" width="132" height="104"><span class="n">${ad.images.length === 1 ? "صورة" : ad.images.length + " صور"}</span></div>
+      <div class="post-thumb"><img src="${imgSrc(ad.images[0])}" alt="" loading="lazy" width="132" height="104">${n > 1 ? `<span class="n">${icon('i-camera')}${n}</span>` : ''}</div>
     </article>`;
+  }
+
+  // Haraj-style illustrated section tiles: «الرئيسية» first, then every section.
+  function tilesHtml(f) {
+    const tile = (id, name, ic, on) => `<button type="button" class="tile" data-cat="${id}" aria-pressed="${on}"><span class="tile-ic">${icon('ci-' + ic, 'ci')}</span><span class="tile-n">${esc(name)}</span></button>`;
+    return `<section class="tiles" aria-label="${T('الأقسام', 'Sections')}"><div class="wrap tiles-grid">
+      ${tile('', T('الرئيسية', 'Home'), 'home', !f.cat)}
+      ${categories.map(c => tile(c.id, catName(c), c.id, f.cat === c.id)).join('')}
+    </div></section>`;
+  }
+
+  // «القريب»: the visitor's position when they share it, Riyadh otherwise.
+  let here = null;
+  function locate() {
+    return new Promise(res => {
+      if (here || !navigator.geolocation) return res(here);
+      const done = p => { if (done.ok) return; done.ok = true; res(p); };
+      setTimeout(() => done(null), 4000);
+      navigator.geolocation.getCurrentPosition(p => { here = [p.coords.latitude, p.coords.longitude]; done(here); }, () => done(null), { timeout: 3500, maximumAge: 600000 });
+    });
+  }
+  function km(a, b) {
+    if (!a || !b) return Infinity;
+    const r = x => x * Math.PI / 180, dLa = r(b[0] - a[0]), dLo = r(b[1] - a[1]);
+    const h = Math.sin(dLa / 2) ** 2 + Math.cos(r(a[0])) * Math.cos(r(b[0])) * Math.sin(dLo / 2) ** 2;
+    return 12742 * Math.asin(Math.sqrt(h));
+  }
+
+  function openCityPicker(f, set) {
+    openDialog(`<h2 id="dlg-title">${T('اختر المنطقة', 'Choose a region')}</h2>
+      <div class="city-pick">
+        <button type="button" class="chip" data-pick="" aria-pressed="${!f.city}">${T('كل المناطق', 'All regions')}</button>
+        ${cities.map(c => `<button type="button" class="chip" data-pick="${esc(c)}" aria-pressed="${f.city === c}">${esc(cityName(c))}</button>`).join('')}
+      </div>
+      <button class="btn btn-outline btn-block" data-close>${T('إغلاق', 'Close')}</button>`, body => {
+      body.querySelectorAll('[data-pick]').forEach(b => b.onclick = () => { dlg.close(); set({ city: b.dataset.pick }); });
+    });
   }
 
   function viewHome(params) {
@@ -145,56 +198,51 @@
     if (key !== lastFilterKey) { shown = PAGE; lastFilterKey = key; }
     const list = filterAds(f);
     const cat = catOf(f.cat);
-    const advanced = ['cond', 'min', 'max'].filter(k => f[k]).length;
-    document.title = (cat ? cat.name + ' | ' : '') + 'سوق طبي';
+    const advanced = ['min', 'max'].filter(k => f[k]).length + (f.cond === 'مستعمل' ? 1 : 0);
+    const near = f.sort === 'near', fresh = f.cond === 'جديد';
+    document.title = (cat ? catName(cat) + ' | ' : '') + T('سوق طبي.كوم', 'SouqTibbi.com');
+    const countTxt = EN() ? `${fmt(list.length)} listings${f.q ? ` for “${esc(f.q)}”` : ''}` : `${fmt(list.length)} إعلان${f.q ? ` عن «${esc(f.q)}»` : ''}`;
 
     app.innerHTML = `
-      <section class="cats" aria-label="الأقسام">
-        <div class="wrap">
-          <div class="cats-row" role="toolbar" aria-label="الأقسام الرئيسية">
-            <button type="button" class="cat" data-cat="" aria-pressed="${!f.cat}"><span class="ic">${icon('c-all')}</span>الكل</button>
-            ${categories.map(c => `<button type="button" class="cat" data-cat="${c.id}" aria-pressed="${f.cat === c.id}"><span class="ic">${icon('c-' + c.icon)}</span>${c.name}</button>`).join('')}
-          </div>
-        </div>
-      </section>
+      ${tilesHtml(f)}
       <div class="wrap">
-        ${cat ? `<div class="subs" role="toolbar" aria-label="الأقسام الفرعية">
-          <button type="button" class="chip" data-sub="" aria-pressed="${!f.sub}">كل ${cat.name}</button>
-          ${cat.subs.map(s => `<button type="button" class="chip" data-sub="${esc(s)}" aria-pressed="${f.sub === s}">${esc(s)}</button>`).join('')}
+        ${cat ? `<div class="subs" role="toolbar" aria-label="${T('الأقسام الفرعية', 'Sub-sections')}">
+          <button type="button" class="chip" data-sub="" aria-pressed="${!f.sub}">${T('كل ' + cat.name, 'All ' + cat.en)}</button>
+          ${cat.subs.map(s => `<button type="button" class="chip" data-sub="${esc(s)}" aria-pressed="${f.sub === s}" lang="ar">${esc(s)}</button>`).join('')}
         </div>` : ''}
-        <div class="toolbar">
-          <label class="sel"><span class="sr-only">المدينة</span><select id="f-city">
-            <option value="">كل المدن</option>${cities.map(c => `<option ${f.city === c ? 'selected' : ''}>${c}</option>`).join('')}
+        <div class="hfilters" role="toolbar" aria-label="${T('تصفية', 'Filter')}">
+          <button type="button" class="hf" data-action="region" aria-pressed="${!!f.city}">${icon('i-ksa')}<span>${f.city ? esc(cityName(f.city)) : T('المنطقة', 'Region')}</span><i class="caret" aria-hidden="true"></i></button>
+          <button type="button" class="hf" data-action="near" aria-pressed="${near}">${icon('i-nav')}<span>${T('القريب', 'Nearby')}</span></button>
+          <button type="button" class="hf" data-action="fresh" aria-pressed="${fresh}"><span>${T('جديد', 'New')}</span></button>
+          <label class="sel hf-sort"><span class="sr-only">${T('الترتيب', 'Sort')}</span><select id="f-sort">
+            <option value="">${T('الأحدث', 'Newest')}</option><option value="low" ${f.sort === 'low' ? 'selected' : ''}>${T('الأقل سعراً', 'Lowest price')}</option><option value="high" ${f.sort === 'high' ? 'selected' : ''}>${T('الأعلى سعراً', 'Highest price')}</option>${near ? `<option value="near" selected>${T('الأقرب', 'Nearest')}</option>` : ''}
           </select></label>
-          <label class="sel"><span class="sr-only">الترتيب</span><select id="f-sort">
-            <option value="">الأحدث</option><option value="low" ${f.sort === 'low' ? 'selected' : ''}>الأقل سعراً</option><option value="high" ${f.sort === 'high' ? 'selected' : ''}>الأعلى سعراً</option>
-          </select></label>
-          <button type="button" class="tool-btn" id="f-toggle" aria-expanded="false" aria-controls="f-panel" aria-pressed="${advanced > 0}">${icon('i-filter')}فلترة ${advanced ? `<span class="count">${advanced}</span>` : ''}</button>
-          ${(f.cat || f.city || f.q || advanced) ? '<button type="button" class="tool-btn" data-action="clear">مسح الكل ✕</button>' : ''}
-          <span class="result-count">${fmt(list.length)} إعلان${f.q ? ` عن «${esc(f.q)}»` : ''}</span>
+          <button type="button" class="hf" id="f-toggle" aria-expanded="false" aria-controls="f-panel" aria-pressed="${advanced > 0}">${icon('i-filter')}<span>${T('فلترة', 'Filter')}</span>${advanced ? `<span class="count">${advanced}</span>` : ''}</button>
+          ${(f.cat || f.city || f.q || f.cond || f.sort || advanced) ? `<button type="button" class="hf hf-clear" data-action="clear">${T('مسح', 'Clear')} ✕</button>` : ''}
         </div>
         <form class="filters-panel" id="f-panel" hidden>
-          <div class="fgroup"><span class="flabel">الحالة</span><div class="seg">
-            ${['', 'جديد', 'مستعمل'].map(c => `<button type="button" class="chip" data-cond="${c}" aria-pressed="${f.cond === c}">${c || 'الكل'}</button>`).join('')}
+          <div class="fgroup"><span class="flabel">${T('الحالة', 'Condition')}</span><div class="seg">
+            ${[['', 'الكل', 'All'], ['جديد', 'جديد', 'New'], ['مستعمل', 'مستعمل', 'Used']].map(([v, a, e]) => `<button type="button" class="chip" data-cond="${v}" aria-pressed="${f.cond === v}">${T(a, e)}</button>`).join('')}
           </div></div>
-          <div class="fgroup"><span class="flabel">السعر (ريال)</span><div class="price-range">
-            <input class="input" name="min" type="number" inputmode="numeric" min="0" placeholder="من" value="${esc(f.min)}" aria-label="أقل سعر">
-            <input class="input" name="max" type="number" inputmode="numeric" min="0" placeholder="إلى" value="${esc(f.max)}" aria-label="أعلى سعر">
+          <div class="fgroup"><span class="flabel">${T('السعر (ريال)', 'Price (SAR)')}</span><div class="price-range">
+            <input class="input" name="min" type="number" inputmode="numeric" min="0" placeholder="${T('من', 'From')}" value="${esc(f.min)}" aria-label="${T('أقل سعر', 'Minimum price')}">
+            <input class="input" name="max" type="number" inputmode="numeric" min="0" placeholder="${T('إلى', 'To')}" value="${esc(f.max)}" aria-label="${T('أعلى سعر', 'Maximum price')}">
           </div></div>
-          <div class="fpanel-actions"><button class="btn btn-primary">تطبيق</button></div>
+          <div class="fpanel-actions"><button class="btn btn-primary">${T('تطبيق', 'Apply')}</button></div>
         </form>
+        <p class="result-count">${countTxt}${near ? ` · ${here ? T('الأقرب إلى موقعك', 'nearest to you') : T('الأقرب إلى الرياض', 'nearest to Riyadh')}` : ''}</p>
         <div class="layout">
-          <section aria-label="الإعلانات">
-            <div class="feed">${list.slice(0, shown).map(postHtml).join('') || `<div class="empty"><b>لا توجد إعلانات مطابقة</b>جرّب تغيير المدينة أو كلمات البحث، أو <a href="#/new" style="color:var(--brand)">أضف إعلانك الآن</a>.</div>`}</div>
-            ${list.length > shown ? `<button type="button" class="more-btn" data-action="more">عرض المزيد (${fmt(list.length - shown)})</button>` : ''}
+          <section aria-label="${T('الإعلانات', 'Listings')}">
+            <div class="feed">${list.slice(0, shown).map(postHtml).join('') || `<div class="empty"><b>${T('لا توجد إعلانات مطابقة', 'No matching listings')}</b>${T('جرّب تغيير المنطقة أو كلمات البحث، أو', 'Try another region or search words, or')} <a href="#/new" style="color:var(--brand)">${T('أضف عرضك الآن', 'add your listing now')}</a>.</div>`}</div>
+            ${list.length > shown ? `<button type="button" class="more-btn" data-action="more">${T('عرض المزيد', 'Show more')} (${fmt(list.length - shown)})</button>` : ''}
           </section>
-          <aside class="side" aria-label="معلومات جانبية">
-            <div class="box promo"><h3>عندك جهاز ما تحتاجه؟</h3><p>أضف إعلانك مجاناً خلال دقيقة ووصّله لآلاف العيادات والمشترين.</p><a class="btn btn-block" href="#/new">${icon('i-plus')}أضف إعلان</a></div>
-            <div class="box"><h3>سوق طبي بالأرقام</h3><div class="stats">
-              <div class="stat"><b>12,480</b><span>إعلان نشط</span></div><div class="stat"><b>3,215</b><span>منشأة صحية</span></div>
-              <div class="stat"><b>870</b><span>جهاز تم التبرع به</span></div><div class="stat"><b>15</b><span>مدينة</span></div></div></div>
-            <div class="box"><h3>تصفح حسب المدينة</h3><div class="city-list">${cities.slice(0, 10).map(c => `<button type="button" class="chip" data-city="${c}" aria-pressed="${f.city === c}">${c}</button>`).join('')}</div></div>
-            <div class="box"><h3>نصائح للتعامل الآمن</h3><p class="safety" style="background:none;padding:0">تأكد من تسجيل الجهاز في هيئة الغذاء والدواء، عاين قبل الدفع، واستخدم الرسائل داخل المنصة. <b>لا يُسمح ببيع الأدوية.</b></p></div>
+          <aside class="side" aria-label="${T('معلومات جانبية', 'More')}">
+            <div class="box promo"><h3>${T('عندك جهاز ما تحتاجه؟', 'Have a device you no longer need?')}</h3><p>${T('أضف عرضك مجاناً خلال دقيقة ووصّله لآلاف العيادات والمشترين.', 'List it free in a minute and reach thousands of clinics and buyers.')}</p><a class="btn btn-block" href="#/new">${icon('i-plus')}${T('أضف عرض', 'Add listing')}</a></div>
+            <div class="box"><h3>${T('سوق طبي بالأرقام', 'SouqTibbi in numbers')}</h3><div class="stats">
+              <div class="stat"><b>12,480</b><span>${T('إعلان نشط', 'active listings')}</span></div><div class="stat"><b>3,215</b><span>${T('منشأة صحية', 'healthcare facilities')}</span></div>
+              <div class="stat"><b>870</b><span>${T('جهاز تم التبرع به', 'devices donated')}</span></div><div class="stat"><b>15</b><span>${T('مدينة', 'cities')}</span></div></div></div>
+            <div class="box"><h3>${T('تصفح حسب المدينة', 'Browse by city')}</h3><div class="city-list">${cities.slice(0, 10).map(c => `<button type="button" class="chip" data-city="${esc(c)}" aria-pressed="${f.city === c}">${esc(cityName(c))}</button>`).join('')}</div></div>
+            <div class="box"><h3>${T('نصائح للتعامل الآمن', 'Trade safely')}</h3><p class="safety" style="background:none;padding:0">${T('تأكد من تسجيل الجهاز في هيئة الغذاء والدواء، عاين قبل الدفع، واستخدم الرسائل داخل المنصة. <b>لا يُسمح ببيع الأدوية.</b>', 'Check the device is registered with the SFDA, inspect before you pay and keep messages on the platform. <b>Selling medicines is not allowed.</b>')}</p></div>
           </aside>
         </div>
       </div>`;
@@ -204,7 +252,14 @@
     app.querySelectorAll('[data-sub]').forEach(b => b.onclick = () => set({ sub: b.dataset.sub }));
     app.querySelectorAll('[data-city]').forEach(b => b.onclick = () => set({ city: f.city === b.dataset.city ? '' : b.dataset.city }));
     app.querySelectorAll('[data-cond]').forEach(b => b.onclick = () => set({ cond: b.dataset.cond }));
-    app.querySelector('#f-city').onchange = e => set({ city: e.target.value });
+    app.querySelector('[data-action="region"]').onclick = () => openCityPicker(f, set);
+    app.querySelector('[data-action="fresh"]').onclick = () => set({ cond: fresh ? '' : 'جديد' });
+    app.querySelector('[data-action="near"]').onclick = async e => {
+      if (near) return set({ sort: '' });
+      e.currentTarget.classList.add('busy');
+      await locate();
+      set({ sort: 'near' });
+    };
     app.querySelector('#f-sort').onchange = e => set({ sort: e.target.value });
     const panel = app.querySelector('#f-panel'), toggle = app.querySelector('#f-toggle');
     toggle.onclick = () => { panel.hidden = !panel.hidden; toggle.setAttribute('aria-expanded', String(!panel.hidden)); };
@@ -214,8 +269,29 @@
     if (more) more.onclick = () => { const y = window.scrollY; shown += PAGE; render(); window.scrollTo(0, y); };
     const clear = app.querySelector('[data-action="clear"]');
     if (clear) clear.onclick = () => go('#/');
-    const pressed = app.querySelector('.cat[aria-pressed="true"]');
-    if (pressed && pressed.dataset.cat) pressed.scrollIntoView({ block: 'nearest', inline: 'center' });
+  }
+
+  // «كل الأقسام»: every section with its sub-sections.
+  function viewCats() {
+    document.title = T('كل الأقسام | سوق طبي.كوم', 'All sections | SouqTibbi.com');
+    app.innerHTML = `<div class="wrap page"><h1 class="page-title">${icon('i-grid')}${T('كل الأقسام', 'All sections')}</h1>
+      <div class="cat-list">${categories.map(c => {
+        const n = allAds().filter(a => a.cat === c.id).length;
+        return `<section class="cat-card"><a class="cat-card-h" href="${homeHash({ cat: c.id })}"><span class="tile-ic">${icon('ci-' + c.id, 'ci')}</span><span><b>${esc(catName(c))}</b><small>${EN() ? `${fmt(n)} listings` : `${fmt(n)} إعلان`}</small></span></a>
+          <div class="cat-card-subs">${c.subs.map(s => `<a class="chip" lang="ar" href="${homeHash({ cat: c.id, sub: s })}">${esc(s)}</a>`).join('')}</div></section>`;
+      }).join('')}</div></div>`;
+  }
+
+  // «الإشعارات»
+  function notifsHtml() {
+    return `<div class="notif"><span class="ic">${icon('c-pulse')}</span><div>${T('إعلان جديد في «أجهزة مراقبة المرضى» بمدينة جدة', 'New listing in “Patient monitors” in Jeddah')}<small>${ago(18)}</small></div></div>
+      <div class="notif"><span class="ic">${icon('i-chat')}</span><div>${T('ردت «مؤسسة الشفاء للتجهيزات» على رسالتك', 'Al-Shifa Equipment replied to your message')}<small>${ago(45)}</small></div></div>
+      <div class="notif"><span class="ic">${icon('c-heart')}</span><div>${T('انخفض سعر «كرسي متحرك كهربائي قابل للطي» في مفضلتك', 'A wheelchair in your favourites dropped in price')}<small>${ago(120)}</small></div></div>
+      <div class="notif"><span class="ic">${icon('c-badge')}</span><div>${T('وظيفة جديدة: «أخصائي تمريض» في الرياض تطابق اهتمامك', 'New job matching your interests: nurse specialist in Riyadh')}<small>${ago(300)}</small></div></div>`;
+  }
+  function viewNotifs() {
+    document.title = T('الإشعارات | سوق طبي.كوم', 'Notifications | SouqTibbi.com');
+    app.innerHTML = `<div class="wrap page narrow"><h1 class="page-title">${icon('i-bell')}${T('الإشعارات', 'Notifications')}</h1><div class="box notif-list">${notifsHtml()}</div></div>`;
   }
 
   document.getElementById('search-form').addEventListener('submit', e => {
@@ -346,7 +422,7 @@
   // ---------- login ----------
   function updateLoginBtn() {
     const b = document.getElementById('login-btn');
-    b.innerHTML = me ? `<span class="av">${initial(me.name)}</span><span class="hide-sm">${esc(me.name)}</span>` : 'دخول';
+    b.innerHTML = me ? `<span class="av">${initial(me.name)}</span><span class="hide-sm" lang="ar">${esc(me.name)}</span>` : `${icon('i-user-f')}<span class="hide-sm">${EN() ? 'Sign in' : 'دخول'}</span>`;
   }
   function requireLogin(next) { if (me) return next(); openLogin(next); }
   function openLogin(next) {
@@ -563,19 +639,29 @@
       const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
       root.dataset.theme = dark ? 'light' : 'dark';
       try { localStorage.setItem('st-theme', root.dataset.theme); } catch {}
+    } else if (act === 'lang') {
+      lang = EN() ? 'ar' : 'en'; store.set('lang', lang); applyLang(); render();
     } else if (act === 'account') {
       me ? go('#/account') : openLogin();
     } else if (act === 'hide-strip') {
       document.getElementById('demo-strip').remove(); store.set('strip', 'hidden');
     } else if (act === 'notifs') {
-      openDialog(`<h2 id="dlg-title">التنبيهات</h2>
-        <div><div class="notif"><span class="ic">${icon('c-pulse')}</span><div>إعلان جديد في «أجهزة مراقبة المرضى» بمدينة جدة<small>قبل 18 دقيقة</small></div></div>
-        <div class="notif"><span class="ic">${icon('i-chat')}</span><div>ردت «مؤسسة الشفاء للتجهيزات» على رسالتك<small>قبل 45 دقيقة</small></div></div>
-        <div class="notif"><span class="ic">${icon('c-heart')}</span><div>انخفض سعر «كرسي متحرك كهربائي قابل للطي» في مفضلتك<small>قبل ساعتين</small></div></div></div>
-        <button class="btn btn-outline btn-block" data-close>إغلاق</button>`);
+      useEn = EN();
+      openDialog(`<h2 id="dlg-title">${T('الإشعارات', 'Notifications')}</h2><div>${notifsHtml()}</div><button class="btn btn-outline btn-block" data-close>${T('إغلاق', 'Close')}</button>`);
     }
   });
   if (store.get('strip', '') === 'hidden') document.getElementById('demo-strip')?.remove();
+
+  // ---------- language ----------
+  function applyLang() {
+    const root = document.documentElement;
+    root.lang = lang; root.dir = EN() ? 'ltr' : 'rtl';
+    document.querySelectorAll('[data-en]').forEach(el => { if (el.dataset.ar == null) el.dataset.ar = el.innerHTML; el.innerHTML = EN() ? el.dataset.en : el.dataset.ar; });
+    document.querySelectorAll('[data-en-ph]').forEach(el => { if (el.dataset.arPh == null) el.dataset.arPh = el.placeholder; el.placeholder = EN() ? el.dataset.enPh : el.dataset.arPh; });
+    document.querySelectorAll('[data-en-aria]').forEach(el => { if (el.dataset.arAria == null) el.dataset.arAria = el.getAttribute('aria-label') || ''; el.setAttribute('aria-label', EN() ? el.dataset.enAria : el.dataset.arAria); });
+    const lb = document.querySelector('.lang-btn b'); if (lb) lb.textContent = EN() ? 'ع' : 'EN';
+  }
+  applyLang();
 
   render();
 })();
